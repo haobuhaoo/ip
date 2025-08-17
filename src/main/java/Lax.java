@@ -18,11 +18,73 @@ public class Lax {
         public void unmarkTask() {
             completed = false;
         }
+
+        public String toString() {
+            return "[" + (completed ? "X" : " ") + "] " + name;
+        }
     }
 
-    private static void addTask(String command, ArrayList<Task> taskList) {
-        taskList.add(new Task(command));
-        System.out.println("added: " + command);
+    private static class Todo extends Task {
+        public Todo(String n) {
+            super(n);
+        }
+
+        public String toString() {
+            return "[T]" + super.toString();
+        }
+    }
+
+    private static class Deadline extends Task {
+        private String dueDate;
+
+        public Deadline(String n, String d) {
+            super(n);
+            dueDate = d;
+        }
+
+        public String toString() {
+            return "[D]" + super.toString() + " (by: " + dueDate + ")";
+        }
+    }
+
+    private static class Event extends Task {
+        private String startDate;
+        private String endDate;
+
+        public Event(String n, String s, String e) {
+            super(n);
+            startDate = s;
+            endDate = e;
+        }
+
+        public String toString() {
+            return "[E]" + super.toString() + " (from: " + startDate + " to: " + endDate + ")";
+        }
+    }
+
+    private static void addTask(String command, ArrayList<Task> taskList, String type) {
+        Task t = null;
+        switch (type) {
+            case "todo" -> t = new Todo(command.substring(5));
+            case "deadline" -> {
+                String temp = command.substring(9);
+                String[] split = temp.split("/by");
+                t = new Deadline(split[0].trim(), split[1].trim());
+            }
+            case "event" -> {
+                String temp = command.substring(6);
+                String[] split = temp.split("/from");
+                String[] timing = split[1].split("/to");
+                t = new Event(split[0].trim(), timing[0].trim(), timing[1].trim());
+            }
+            default -> {
+                System.out.println("Invalid task type.");
+                return;
+            }
+        }
+        taskList.add(t);
+        System.out.println("Got it. I've added this task to the list:\n  " + t
+                + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
     private static String showList(ArrayList<Task> list) {
@@ -31,7 +93,7 @@ public class Lax {
         StringBuilder s = new StringBuilder("Here are the tasks in your list:");
         int n = 1;
         for (Task i : list) {
-            s.append("\n").append(n).append(". [").append(i.completed ? "X" : " ").append("] ").append(i.name);
+            s.append("\n").append(n).append(". ").append(i.toString());
             n++;
         }
         return s.toString();
@@ -42,21 +104,15 @@ public class Lax {
         boolean emptyList = taskList.isEmpty();
 
         switch (cmd[0]) {
-            case "start":
-                System.out.println("Hello! I'm Lax.\nWhat can I do for you?");
-                return;
-
-            case "list":
-                System.out.println(showList(taskList));
-                return;
-
-            case "mark", "unmark":
+            case "start" -> System.out.println("Hello! I'm Lax.\nWhat can I do for you?");
+            case "list" -> System.out.println(showList(taskList));
+            case "mark", "unmark" -> {
                 boolean mark = cmd[0].equals("mark");
                 if (emptyList) {
                     System.out.println("No task to be " + (mark ? "marked" : "unmarked"));
                     return;
                 } else if (cmd.length != 2) {
-                    addTask(command, taskList);
+                    System.out.println("Invalid task number.");
                     return;
                 }
 
@@ -68,23 +124,21 @@ public class Lax {
                             return;
                         }
                         t.markTask();
-                        System.out.println("Nice! I've marked this task as done: \n" + "  [X] " + t.name);
+                        System.out.println("Nice! I've marked this task as done:\n  " + t);
                     } else {
                         if (!t.completed) {
                             System.out.println("Task \"" + t.name + "\" is already marked as not done");
                             return;
                         }
                         t.unmarkTask();
-                        System.out.println("OK, I've marked this task as not done yet: \n" + "  [ ] " + t.name);
+                        System.out.println("OK, I've marked this task as not done yet:\n  " + t);
                     }
-                    return;
                 } catch (NumberFormatException e) {
-                    addTask(command, taskList);
-                    return;
+                    System.out.println("Invalid task number.");
                 }
-
-            default:
-                addTask(command, taskList);
+            }
+            case "todo", "deadline", "event" -> addTask(command, taskList, cmd[0]);
+            default -> System.out.println("Invalid command.");
         }
     }
 
