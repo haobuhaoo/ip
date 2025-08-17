@@ -52,26 +52,26 @@ public class Lax {
             switch (TaskType.valueOf(type.toUpperCase())) {
                 case TODO -> {
                     try {
-                        t = new Todo(command.substring(5));
+                        t = new Todo(command.split(" ", 2)[1].trim());
                     } catch (IndexOutOfBoundsException e) {
                         throw new InvalidCommandException("eg. todo borrow book");
                     }
                 }
                 case DEADLINE -> {
                     try {
-                        String temp = command.substring(9);
-                        String[] split = temp.split("/by");
-                        t = new Deadline(split[0].trim(), split[1].trim());
+                        String temp = command.split(" ", 2)[1].trim();
+                        String[] desc = temp.split("/by");
+                        t = new Deadline(desc[0].trim(), desc[1].trim());
                     } catch (IndexOutOfBoundsException e) {
                         throw new InvalidCommandException("eg. deadline return book /by Sunday");
                     }
                 }
                 case EVENT -> {
                     try {
-                        String temp = command.substring(6);
-                        String[] split = temp.split("/from");
-                        String[] timing = split[1].split("/to");
-                        t = new Event(split[0].trim(), timing[0].trim(), timing[1].trim());
+                        String temp = command.split(" ", 2)[1].trim();
+                        String[] desc = temp.split("/from");
+                        String[] timing = desc[1].trim().split("/to");
+                        t = new Event(desc[0].trim(), timing[0].trim(), timing[1].trim());
                     } catch (IndexOutOfBoundsException e) {
                         throw new InvalidCommandException("eg. event project meeting /from Mon 2pm /to 4pm");
                     }
@@ -82,7 +82,7 @@ public class Lax {
                         eg. event project meeting /from Mon 2pm /to 4pm""");
             }
         } catch (IllegalArgumentException e) {
-            throw new InvalidCommandException("");
+            throw new InvalidCommandException("\"" + command + "\"");
         }
 
         taskList.add(t);
@@ -108,13 +108,17 @@ public class Lax {
     private static void cmdFunction(String command, ArrayList<Task> taskList) throws InvalidCommandException {
         String[] cmd = command.split(" ");
 
-        switch (CommandList.valueOf(cmd[0].toUpperCase())) {
-            case START -> System.out.println("Hello! I'm Lax.\nWhat can I do for you?");
-            case LIST -> System.out.println(showList(taskList));
-            case MARK, UNMARK -> labelTask(cmd, taskList, cmd[0].equals("mark"));
-            case TODO, DEADLINE, EVENT -> addTask(command, taskList, cmd[0]);
-            case DELETE -> deleteTask(cmd, taskList);
-            default -> throw new InvalidCommandException("");
+        try {
+            switch (CommandList.valueOf(cmd[0].toUpperCase())) {
+                case START -> System.out.println("Hello! I'm Lax.\nWhat can I do for you?");
+                case LIST -> System.out.println(showList(taskList));
+                case MARK, UNMARK -> labelTask(cmd, taskList, cmd[0].equals("mark"));
+                case TODO, DEADLINE, EVENT -> addTask(command, taskList, cmd[0]);
+                case DELETE -> deleteTask(cmd, taskList);
+                default -> throw new InvalidCommandException("\"" + command + "\"");
+            }
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCommandException("\"" + command + "\"");
         }
     }
 
