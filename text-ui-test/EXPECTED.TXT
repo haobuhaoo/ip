@@ -1,5 +1,14 @@
 Hello! I'm Lax.
 What can I do for you?
+There is no task in your list.
+Invalid command.
+eg. todo borrow book
+Invalid command.
+eg. deadline return book /by Sunday
+Invalid command.
+eg. event project meeting /from Mon 2pm /to 4pm
+Invalid command.
+No task to be marked
 Got it. I've added this task to the list:
   [T][ ] borrow book
 Now you have 1 tasks in the list.
@@ -15,10 +24,19 @@ Here are the tasks in your list:
 3. [E][ ] project meeting (from: mon 2pm to: 4pm)
 Nice! I've marked this task as done:
   [D][X] return book (by: sunday)
+Invalid command.
+eg. mark 1
+eg. unmark 1
+Invalid command.
 Task "return book" is already marked as done
+Invalid command.
+eg. mark 1
+eg. unmark 1
 OK, I've marked this task as not done yet:
   [D][ ] return book (by: sunday)
-Task "return book" is already marked as not done
+Invalid command.
+Invalid task number
 Please key something in.
 Invalid command.
+
 Bye. Hope to see you again soon!
