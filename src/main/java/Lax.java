@@ -2,66 +2,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Lax {
-    abstract static class Task {
-        private final String name;
-        private Boolean completed;
-
-        public Task(String n) {
-            name = n;
-            completed = false;
-        }
-
-        public void markTask() {
-            completed = true;
-        }
-
-        public void unmarkTask() {
-            completed = false;
-        }
-
-        public String toString() {
-            return "[" + (completed ? "X" : " ") + "] " + name;
-        }
-    }
-
-    private static class Todo extends Task {
-        public Todo(String n) {
-            super(n);
-        }
-
-        public String toString() {
-            return "[T]" + super.toString();
-        }
-    }
-
-    private static class Deadline extends Task {
-        private final String dueDate;
-
-        public Deadline(String n, String d) {
-            super(n);
-            dueDate = d;
-        }
-
-        public String toString() {
-            return "[D]" + super.toString() + " (by: " + dueDate + ")";
-        }
-    }
-
-    private static class Event extends Task {
-        private final String startDate;
-        private final String endDate;
-
-        public Event(String n, String s, String e) {
-            super(n);
-            startDate = s;
-            endDate = e;
-        }
-
-        public String toString() {
-            return "[E]" + super.toString() + " (from: " + startDate + " to: " + endDate + ")";
-        }
-    }
-
     private static void addTask(String command, ArrayList<Task> taskList, String type) throws InvalidCommandException {
         Task t;
         switch (type) {
@@ -131,15 +71,15 @@ public class Lax {
                 try {
                     Task t = taskList.get(Integer.parseInt(cmd[1]) - 1);
                     if (mark) {
-                        if (t.completed) {
-                            throw new InvalidCommandException("Task \"" + t.name + "\" is already marked as done");
+                        if (t.isCompleted()) {
+                            throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as done");
                         }
 
                         t.markTask();
                         System.out.println("Nice! I've marked this task as done:\n  " + t);
                     } else {
-                        if (!t.completed) {
-                            throw new InvalidCommandException("Task \"" + t.name + "\" is already marked as not done");
+                        if (!t.isCompleted()) {
+                            throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as not done");
                         }
 
                         t.unmarkTask();
