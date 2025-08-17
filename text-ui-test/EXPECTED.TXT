@@ -35,8 +35,13 @@ eg. unmark 1
 OK, I've marked this task as not done yet:
   [D][ ] return book (by: sunday)
 Invalid command.
-Invalid task number
+Invalid task number.
+Noted. I've removed this task:
+  [T][ ] borrow book
+Now you have 2 tasks in the list.
+Invalid command.
+Invalid task number.
 Please key something in.
 Invalid command.
-
+"lists"
 Bye. Hope to see you again soon!
