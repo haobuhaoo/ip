@@ -3,12 +3,18 @@ public class Event extends Task {
     private final String endDate;
 
     public Event(String n, String s, String e) {
-        super(n);
+        this(n, false, s, e);
+    }
+
+    public Event(String n, Boolean c, String s, String e) {
+        super(n, c);
         startDate = s;
         endDate = e;
     }
 
-    public String toString() {
-        return "[E]" + super.toString() + " (from: " + startDate + " to: " + endDate + ")";
-    }
+    @Override
+    public String toFile() { return "event | " + super.toFile() + " | " + startDate + " | " + endDate; }
+
+    @Override
+    public String toString() { return "[E]" + super.toString() + " (from: " + startDate + " to: " + endDate + ")"; }
 }
