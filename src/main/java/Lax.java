@@ -2,16 +2,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Lax {
-    public enum CommandList {START, LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE}
+    private static ArrayList<Task> taskList;
+
+    public enum CommandList {START, LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND}
 
     public enum TaskType {TODO, DEADLINE, EVENT}
 
     private static ArrayList<Task> loadTask() {
-        ArrayList<Task> task = new ArrayList<>(100);
+        ArrayList<Task> taskList = new ArrayList<>(100);
         File file = new File("./data/data.txt");
 
         if (!file.exists()) {
@@ -21,10 +26,11 @@ public class Lax {
             } catch (IOException e) {
                 System.out.println("Error creating new file: " + e.getMessage());
             }
-            return task;
+            return taskList;
         }
 
         try (Scanner scanner = new Scanner(file)) {
+            int corrupted = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
                 if (line.isEmpty()) continue;
@@ -32,40 +38,49 @@ public class Lax {
                 String[] data = line.split("\\|");
                 boolean completed = data[1].trim().equals("1");
 
-                Task t = null;
                 try {
+                    Task t = null;
                     switch (TaskType.valueOf(data[0].trim().toUpperCase())) {
                     case TODO -> t = new Todo(data[2].trim(), completed);
-                    case DEADLINE -> t = new Deadline(data[2].trim(), completed, data[3].trim());
-                    case EVENT -> t = new Event(data[2].trim(), completed, data[3].trim(), data[4].trim());
+                    case DEADLINE -> t = new Deadline(data[2].trim(), completed,
+                            LocalDateTime.parse(data[3].trim()));
+                    case EVENT -> t = new Event(data[2].trim(), completed,
+                            LocalDateTime.parse(data[3].trim()), LocalDateTime.parse(data[4].trim()));
                     }
+                    taskList.add(t);
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
                     throw new RuntimeException(e);
+                } catch (DateTimeParseException e) {
+                    corrupted++;
+                    System.out.println("Skipping corrupted task: " + line);
                 }
-                task.add(t);
+            }
+
+            if (corrupted > 0) {
+                System.out.println("Total Corrupted Tasks: " + corrupted + "\n");
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error reading file from hard disk: " + e.getMessage());
         }
 
-        return task;
+        return taskList;
     }
 
-    private static void saveTask(ArrayList<Task> task) {
+    private static void saveTask() {
         try (FileWriter file = new FileWriter("./data/data.txt")) {
-            for (Task t : task) {
+            for (Task t : taskList) {
                 file.write(t.toFile() + "\n");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    private static String showList(ArrayList<Task> list) {
-        if (list.isEmpty()) return "There is no task in your list.";
+    private static String showList(ArrayList<Task> list, LocalDateTime dateTime) {
+        String tempString = dateTime == null ? "" : " on " + dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"));
+        if (list.isEmpty()) return "There is no task in your list" + tempString + ".";
 
-        StringBuilder s = new StringBuilder("Here are the tasks in your list:");
+        StringBuilder s = new StringBuilder("Here are the tasks in your list" + tempString + ":");
         int n = 1;
         for (Task i : list) {
             s.append("\n").append(n).append(". ").append(i.toString());
@@ -74,7 +89,11 @@ public class Lax {
         return s.toString();
     }
 
-    private static void labelTask(String[] cmd, ArrayList<Task> taskList, boolean mark) throws InvalidCommandException {
+    private static LocalDateTime parseDateTime(String dateTime) throws DateTimeParseException {
+        return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("dd/MM/yyyy HHmm"));
+    }
+
+    private static void labelTask(String[] cmd, boolean mark) throws InvalidCommandException {
         if (taskList.isEmpty())
             throw new InvalidCommandException("No task to be " + (mark ? "marked" : "unmarked"));
         if (cmd.length != 2) throw new InvalidCommandException("eg. mark 1\neg. unmark 1");
@@ -103,7 +122,7 @@ public class Lax {
         }
     }
 
-    private static void addTask(String command, ArrayList<Task> taskList, String type) throws InvalidCommandException {
+    private static void addTask(String command, String type) throws InvalidCommandException {
         Task t;
         try {
             switch (TaskType.valueOf(type.toUpperCase())) {
@@ -117,26 +136,27 @@ public class Lax {
             case DEADLINE -> {
                 try {
                     String temp = command.split(" ", 2)[1].trim();
-                    String[] desc = temp.split("/by");
-                    t = new Deadline(desc[0].trim(), desc[1].trim());
+                    String[] data = temp.split("/by");
+                    t = new Deadline(data[0].trim(), parseDateTime(data[1].trim()));
                 } catch (IndexOutOfBoundsException e) {
-                    throw new InvalidCommandException("eg. deadline return book /by Sunday");
+                    throw new InvalidCommandException("eg. deadline return book /by 23/08/2025 1800");
                 }
             }
             case EVENT -> {
                 try {
                     String temp = command.split(" ", 2)[1].trim();
-                    String[] desc = temp.split("/from");
-                    String[] timing = desc[1].trim().split("/to");
-                    t = new Event(desc[0].trim(), timing[0].trim(), timing[1].trim());
+                    String[] data = temp.split("/from");
+                    String[] timing = data[1].trim().split("/to");
+                    t = new Event(data[0].trim(), parseDateTime(timing[0].trim()), parseDateTime(timing[1].trim()));
                 } catch (IndexOutOfBoundsException e) {
-                    throw new InvalidCommandException("eg. event project meeting /from Mon 2pm /to 4pm");
+                    throw new InvalidCommandException("eg. event project meeting "
+                            + "/from 23/08/2025 1400 /to 23/08/2025 1600");
                 }
             }
             default -> throw new InvalidCommandException("""
                     eg. todo borrow book
-                    eg. deadline return book /by Sunday
-                    eg. event project meeting /from Mon 2pm /to 4pm""");
+                    eg. deadline return book /by 23/08/2025 1800
+                    eg. event project meeting /from 23/08/2025 1400 /to 23/08/2025 1600""");
             }
         } catch (IllegalArgumentException e) {
             throw new InvalidCommandException("\"" + command + "\"");
@@ -147,7 +167,7 @@ public class Lax {
                 + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
-    private static void deleteTask(String[] cmd, ArrayList<Task> taskList) throws InvalidCommandException {
+    private static void deleteTask(String[] cmd) throws InvalidCommandException {
         if (taskList.isEmpty()) throw new InvalidCommandException("No task to delete.");
         if (cmd.length != 2) throw new InvalidCommandException("eg. delete 1");
 
@@ -162,16 +182,43 @@ public class Lax {
         }
     }
 
-    private static void cmdFunction(String command, ArrayList<Task> taskList) throws InvalidCommandException {
+    private static String showTask(String command) throws InvalidCommandException {
+        String[] cmd = command.split(" ", 2);
+        LocalDateTime dateTime;
+        try {
+            dateTime = parseDateTime(cmd[1]);
+        } catch (DateTimeParseException e) {
+            throw new InvalidCommandException("eg. find 23/08/2025 1600");
+        }
+
+        ArrayList<Task> newTask = new ArrayList<>(100);
+        for (Task t : taskList) {
+            if (t instanceof Deadline temp) {
+                if (temp.getDueDate().isEqual(dateTime) || temp.getDueDate().isAfter(dateTime)) {
+                    newTask.add(t);
+                }
+            } else if (t instanceof Event temp) {
+                if ((temp.getStartDate().isEqual(dateTime) || temp.getStartDate().isBefore(dateTime))
+                        && (temp.getEndDate().isEqual(dateTime) || temp.getEndDate().isAfter(dateTime))) {
+                    newTask.add(t);
+                }
+            }
+        }
+        return showList(newTask, dateTime);
+    }
+
+    private static void cmdFunction(String command) throws InvalidCommandException {
+        if (taskList == null) return;
         String[] cmd = command.split(" ");
 
         try {
             switch (CommandList.valueOf(cmd[0].toUpperCase())) {
             case START -> System.out.println("Hello! I'm Lax.\nWhat can I do for you?");
-            case LIST -> System.out.println(showList(taskList));
-            case MARK, UNMARK -> labelTask(cmd, taskList, cmd[0].equals("mark"));
-            case TODO, DEADLINE, EVENT -> addTask(command, taskList, cmd[0]);
-            case DELETE -> deleteTask(cmd, taskList);
+            case LIST -> System.out.println(showList(taskList, null));
+            case MARK, UNMARK -> labelTask(cmd, cmd[0].equals("mark"));
+            case TODO, DEADLINE, EVENT -> addTask(command, cmd[0]);
+            case DELETE -> deleteTask(cmd);
+            case FIND -> System.out.println(showTask(command));
             default -> throw new InvalidCommandException("\"" + command + "\"");
             }
         } catch (IllegalArgumentException e) {
@@ -181,15 +228,17 @@ public class Lax {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> taskList = loadTask();
+        taskList = loadTask();
 
         String command = "start";
         do {
             if (!command.isEmpty()) {
                 try {
-                    cmdFunction(command, taskList);
+                    cmdFunction(command);
                 } catch (InvalidCommandException e) {
                     System.out.println(e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println("Wrong DateTime format.\neg. 23/08/2025 1800");
                 }
             } else {
                 System.out.println("Please key something in.");
@@ -198,7 +247,7 @@ public class Lax {
         } while (!command.equals("bye"));
         System.out.println("Bye. Hope to see you again soon!");
 
-        saveTask(taskList);
+        saveTask();
         scanner.close();
     }
 }

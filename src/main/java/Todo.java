@@ -3,7 +3,9 @@ public class Todo extends Task {
         this(n, false);
     }
 
-    public Todo(String n, Boolean c) { super(n, c); }
+    public Todo(String n, Boolean c) {
+        super(n, c);
+    }
 
     @Override
     public String toFile() { return "todo | " + super.toFile(); }

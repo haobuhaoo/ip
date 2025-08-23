@@ -7,21 +7,13 @@ abstract class Task {
         completed = c;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public Boolean isCompleted() {
-        return completed;
-    }
+    public Boolean isCompleted() { return completed; }
 
-    public void markTask() {
-        completed = true;
-    }
+    public void markTask() { completed = true; }
 
-    public void unmarkTask() {
-        completed = false;
-    }
+    public void unmarkTask() { completed = false; }
 
     public String toFile() { return (completed ? "1" : "0") + " | " + name; }
 

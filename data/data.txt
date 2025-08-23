@@ -1,4 +1,6 @@
 todo | 1 | read book
-deadline | 0 | return book | June 6th
-event | 0 | project meeting | Aug 6th 2 pm | 4pm
-todo | 1 | join sports club
+deadline | 0 | return book | 2025-06-06T12:00
+event | 1 | project meeting | 2025-06-06T00:00 | 2025-06-07T00:00
+todo | 0 | join sports club
+deadline | 1 | assignment | 2025-03-03T13:00
+event | 0 | game match | 2025-08-02T13:30 | 2025-08-02T18:00
