@@ -55,6 +55,8 @@ public class TaskList {
             return t;
         } catch (NumberFormatException e) {
             throw new InvalidCommandException("eg. mark 1\neg. unmark 1");
+        } catch (IndexOutOfBoundsException e) {
+            throw new InvalidCommandException("Invalid task number.");
         }
     }
 
@@ -98,6 +100,8 @@ public class TaskList {
             return taskList.remove(Integer.parseInt(number) - 1);
         } catch (NumberFormatException e) {
             throw new InvalidCommandException("eg. delete 1");
+        } catch (IndexOutOfBoundsException e) {
+            throw new InvalidCommandException("Invalid task number.");
         }
     }
 

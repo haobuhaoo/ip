@@ -1,29 +1,30 @@
 Hello! I'm Lax.
 What can I do for you?
+Key "help" to find out the list of commands.
 There is no task in your list.
 Invalid command.
-eg. todo borrow book
+"todo"
 Invalid command.
-eg. deadline return book /by Sunday
+eg. deadline return book /by 23-08-2025 1800
 Invalid command.
-eg. event project meeting /from Mon 2pm /to 4pm
+eg. event project meeting /from 23-08-2025 1400 /to 23-08-2025 1600
 Invalid command.
 No task to be marked
 Got it. I've added this task to the list:
   [T][ ] borrow book
 Now you have 1 tasks in the list.
 Got it. I've added this task to the list:
-  [D][ ] return book (by: sunday)
+  [D][ ] return book (by: Aug 25 2025 12:00am)
 Now you have 2 tasks in the list.
 Got it. I've added this task to the list:
-  [E][ ] project meeting (from: mon 2pm to: 4pm)
+  [E][ ] project meeting (from: Aug 20 2025 02:00pm to: Aug 20 2025 04:00pm)
 Now you have 3 tasks in the list.
 Here are the tasks in your list:
 1. [T][ ] borrow book
-2. [D][ ] return book (by: sunday)
-3. [E][ ] project meeting (from: mon 2pm to: 4pm)
+2. [D][ ] return book (by: Aug 25 2025 12:00am)
+3. [E][ ] project meeting (from: Aug 20 2025 02:00pm to: Aug 20 2025 04:00pm)
 Nice! I've marked this task as done:
-  [D][X] return book (by: sunday)
+  [D][X] return book (by: Aug 25 2025 12:00am)
 Invalid command.
 eg. mark 1
 eg. unmark 1
@@ -33,7 +34,7 @@ Invalid command.
 eg. mark 1
 eg. unmark 1
 OK, I've marked this task as not done yet:
-  [D][ ] return book (by: sunday)
+  [D][ ] return book (by: Aug 25 2025 12:00am)
 Invalid command.
 Invalid task number.
 Noted. I've removed this task:
@@ -41,6 +42,21 @@ Noted. I've removed this task:
 Now you have 2 tasks in the list.
 Invalid command.
 Invalid task number.
+Wrong DateTime format.
+eg. 23-08-2025 1800
+Here are the tasks in your list on Aug 20 2025 12:00am:
+1. [D][ ] return book (by: Aug 25 2025 12:00am)
+List of Commands:
+- list
+- mark "task number"
+- unmark "task number"
+- todo "task name"
+- deadline "task name" /by "due DateTime"
+- event "task name" /from "start DateTime" /to "end DateTime"
+- delete "task number"
+- find "DateTime"
+- help
+- bye
 Please key something in.
 Invalid command.
 "lists"
