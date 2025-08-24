@@ -1,3 +1,7 @@
+package Lax.Task;
+
+import Lax.Exception.InvalidCommandException;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,7 +18,9 @@ public class TaskList {
         taskList = t;
     }
 
-    public int size() { return taskList.size(); }
+    public int size() {
+        return taskList.size();
+    }
 
     public LocalDateTime parseDateTime(String dateTime) throws DateTimeParseException {
         return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm"));
@@ -41,13 +47,13 @@ public class TaskList {
             Task t = taskList.get(Integer.parseInt(number) - 1);
             if (mark) {
                 if (t.isCompleted()) {
-                    throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as done");
+                    throw new InvalidCommandException("Lax.Task.Task \"" + t.getName() + "\" is already marked as done");
                 }
 
                 t.markTask();
             } else {
                 if (!t.isCompleted()) {
-                    throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as not done");
+                    throw new InvalidCommandException("Lax.Task.Task \"" + t.getName() + "\" is already marked as not done");
                 }
 
                 t.unmarkTask();

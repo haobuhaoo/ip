@@ -1,3 +1,7 @@
+package Lax.Ui;
+
+import Lax.Task.TaskList;
+
 import java.util.Scanner;
 
 public class Ui {

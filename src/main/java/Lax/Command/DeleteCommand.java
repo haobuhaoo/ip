@@ -1,3 +1,11 @@
+package Lax.Command;
+
+import Lax.Exception.InvalidCommandException;
+import Lax.Storage;
+import Lax.Task.Task;
+import Lax.Task.TaskList;
+import Lax.Ui.Ui;
+
 public class DeleteCommand extends Command {
     private final String taskNumber;
 

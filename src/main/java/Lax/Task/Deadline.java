@@ -1,3 +1,5 @@
+package Lax.Task;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -13,14 +15,18 @@ public class Deadline extends Task {
         dueDate = d;
     }
 
-    public LocalDateTime getDueDate() { return dueDate; }
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
 
     private String parseDateTime(LocalDateTime dueDate) {
         return dueDate.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"));
     }
 
     @Override
-    public String toFile() { return "deadline | " + super.toFile() + " | " + dueDate; }
+    public String toFile() {
+        return "deadline | " + super.toFile() + " | " + dueDate;
+    }
 
     @Override
     public String toString() {

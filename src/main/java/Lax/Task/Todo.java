@@ -1,3 +1,5 @@
+package Lax.Task;
+
 public class Todo extends Task {
     public Todo(String n) {
         this(n, false);
@@ -8,7 +10,9 @@ public class Todo extends Task {
     }
 
     @Override
-    public String toFile() { return "todo | " + super.toFile(); }
+    public String toFile() {
+        return "todo | " + super.toFile();
+    }
 
     @Override
     public String toString() {

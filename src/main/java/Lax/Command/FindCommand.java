@@ -1,3 +1,9 @@
+package Lax.Command;
+
+import Lax.Storage;
+import Lax.Task.TaskList;
+import Lax.Ui.Ui;
+
 public class FindCommand extends Command {
     private final String dateTime;
 

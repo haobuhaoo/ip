@@ -1,3 +1,5 @@
+package Lax.Task;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -15,9 +17,13 @@ public class Event extends Task {
         endDate = e;
     }
 
-    public LocalDateTime getStartDate() { return startDate; }
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
 
-    public LocalDateTime getEndDate() { return endDate; }
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
 
     private String parseDateTime(LocalDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"));

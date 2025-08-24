@@ -1,3 +1,7 @@
+package Lax;
+
+import Lax.Task.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;

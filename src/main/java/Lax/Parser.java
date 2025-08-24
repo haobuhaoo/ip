@@ -1,3 +1,8 @@
+package Lax;
+
+import Lax.Command.*;
+import Lax.Exception.InvalidCommandException;
+
 public class Parser {
     public enum CommandList {LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, HELP, BYE}
 
