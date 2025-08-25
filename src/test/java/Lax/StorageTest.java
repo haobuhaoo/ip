@@ -1,9 +1,6 @@
 package Lax;
 
-import Lax.Task.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,7 +9,15 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import Lax.Task.Deadline;
+import Lax.Task.Event;
+import Lax.Task.Task;
+import Lax.Task.TaskList;
+import Lax.Task.Todo;
 
 public class StorageTest {
     String filePath;
@@ -23,6 +28,7 @@ public class StorageTest {
     void setup() {
         filePath = tempDir.resolve("./data/data.txt").toString();
     }
+
     @Test
     public void loadTask_fileDoesntExist_success() {
         assertEquals(0, new Storage(filePath).loadTask().size());

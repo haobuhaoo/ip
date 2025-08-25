@@ -1,12 +1,12 @@
 package Lax;
 
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
+
 import Lax.Command.Command;
 import Lax.Exception.InvalidCommandException;
 import Lax.Task.TaskList;
 import Lax.Ui.Ui;
-
-import java.time.format.DateTimeParseException;
-import java.util.Scanner;
 
 public class Lax {
     private static Ui ui;

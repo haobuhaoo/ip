@@ -1,6 +1,13 @@
 package Lax;
 
-import Lax.Command.*;
+import Lax.Command.AddCommand;
+import Lax.Command.Command;
+import Lax.Command.DeleteCommand;
+import Lax.Command.ExitCommand;
+import Lax.Command.FindCommand;
+import Lax.Command.HelpCommand;
+import Lax.Command.LabelCommand;
+import Lax.Command.ListCommand;
 import Lax.Exception.InvalidCommandException;
 
 public class Parser {
