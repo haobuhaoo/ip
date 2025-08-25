@@ -174,6 +174,12 @@ public class TaskList {
         }
     }
 
+    /**
+     * Finds and filters all <code>Task</code> in the tasklist by the keyword in the task name.
+     *
+     * @param desc The keyword to find by.
+     * @return A <code>String</code> representation of the filtered tasklist.
+     */
     public String findTask(String desc) {
         ArrayList<Task> newTask = new ArrayList<>(100);
         for (Task t : taskList) {
