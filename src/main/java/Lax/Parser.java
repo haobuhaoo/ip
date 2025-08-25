@@ -3,9 +3,22 @@ package Lax;
 import Lax.Command.*;
 import Lax.Exception.InvalidCommandException;
 
+/**
+ * Represents the tool used to analyse user inputs.
+ */
 public class Parser {
+    /**
+     * List of available commands.
+     */
     public enum CommandList {LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, HELP, BYE}
 
+    /**
+     * Parses the user input String and outputs the corresponding <code>Command</code>.
+     *
+     * @param command User input String.
+     * @return The corresponding Command.
+     * @throws InvalidCommandException If command is not in <code>CommandList</code> or is incomplete.
+     */
     public static Command parse(String command) throws InvalidCommandException {
         String[] cmd = command.split(" ", 2);
 
