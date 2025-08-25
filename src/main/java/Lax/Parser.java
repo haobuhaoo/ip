@@ -4,7 +4,7 @@ import Lax.Command.*;
 import Lax.Exception.InvalidCommandException;
 
 public class Parser {
-    public enum CommandList {LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, HELP, BYE}
+    public enum CommandList {LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, FILTER, HELP, BYE}
 
     public static Command parse(String command) throws InvalidCommandException {
         String[] cmd = command.split(" ", 2);
@@ -25,6 +25,9 @@ public class Parser {
             }
             case FIND -> {
                 return new FindCommand(cmd[1].trim());
+            }
+            case FILTER -> {
+                return new FilterCommand(cmd[1].trim());
             }
             case HELP -> {
                 return new HelpCommand();

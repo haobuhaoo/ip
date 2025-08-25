@@ -1,14 +1,18 @@
 package Lax.Task;
 
-import Lax.Exception.InvalidCommandException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import Lax.Exception.InvalidCommandException;
 
 public class TaskListTest {
     ArrayList<Task> arrayList;
@@ -171,6 +175,17 @@ public class TaskListTest {
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\nInvalid task number.", e.getMessage());
         }
+    }
+
+    @Test
+    public void findTask_taskFound_success() {
+        arrayList.add(todo);
+        arrayList.add(deadline);
+        arrayList.add(event);
+
+        assertEquals("Here are the tasks in your list:\n" + "1. [T][ ] read book\n"
+                        + "2. [D][ ] return book (by: Aug 25 2025 01:50pm)",
+                new TaskList(arrayList).findTask("book"));
     }
 
     @Test

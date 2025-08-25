@@ -1,8 +1,8 @@
 package Lax.Ui;
 
-import Lax.Task.TaskList;
-
 import java.util.Scanner;
+
+import Lax.Task.TaskList;
 
 public class Ui {
     public void showWelcome() {
@@ -38,7 +38,8 @@ public class Ui {
                 - deadline "task name" /by "due DateTime"
                 - event "task name" /from "start DateTime" /to "end DateTime"
                 - delete "task number"
-                - find "DateTime"
+                - find "task description"
+                - filter "DateTime"
                 - help
                 - bye""");
     }

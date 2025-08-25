@@ -1,10 +1,20 @@
 package Lax;
 
-import Lax.Command.*;
-import Lax.Exception.InvalidCommandException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import Lax.Command.AddCommand;
+import Lax.Command.DeleteCommand;
+import Lax.Command.ExitCommand;
+import Lax.Command.FilterCommand;
+import Lax.Command.FindCommand;
+import Lax.Command.HelpCommand;
+import Lax.Command.LabelCommand;
+import Lax.Command.ListCommand;
+import Lax.Exception.InvalidCommandException;
 
 public class ParserTest {
     @Test
@@ -21,7 +31,9 @@ public class ParserTest {
 
         assertInstanceOf(DeleteCommand.class, Parser.parse("delete 1"));
 
-        assertInstanceOf(FindCommand.class, Parser.parse("find 23-08-2025 1400"));
+        assertInstanceOf(FindCommand.class, Parser.parse("find book"));
+
+        assertInstanceOf(FilterCommand.class, Parser.parse("filter 23-08-2025 1400"));
 
         assertInstanceOf(HelpCommand.class, Parser.parse("help"));
 

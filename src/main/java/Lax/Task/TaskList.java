@@ -1,13 +1,13 @@
 package Lax.Task;
 
-import Lax.Exception.InvalidCommandException;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+
+import Lax.Exception.InvalidCommandException;
 
 public class TaskList {
     private final ArrayList<Task> taskList;
@@ -109,6 +109,16 @@ public class TaskList {
         } catch (IndexOutOfBoundsException e) {
             throw new InvalidCommandException("Invalid task number.");
         }
+    }
+
+    public String findTask(String desc) {
+        ArrayList<Task> newTask = new ArrayList<>(100);
+        for (Task t : taskList) {
+            if (t.getName().contains(desc)) {
+                newTask.add(t);
+            }
+        }
+        return new TaskList(newTask).showList(null);
     }
 
     public String filterTask(String dt) {
