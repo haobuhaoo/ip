@@ -47,13 +47,13 @@ public class TaskList {
             Task t = taskList.get(Integer.parseInt(number) - 1);
             if (mark) {
                 if (t.isCompleted()) {
-                    throw new InvalidCommandException("Lax.Task.Task \"" + t.getName() + "\" is already marked as done");
+                    throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as done");
                 }
 
                 t.markTask();
             } else {
                 if (!t.isCompleted()) {
-                    throw new InvalidCommandException("Lax.Task.Task \"" + t.getName() + "\" is already marked as not done");
+                    throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as not done");
                 }
 
                 t.unmarkTask();
