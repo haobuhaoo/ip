@@ -11,15 +11,15 @@ public class FindCommand extends Command {
     /**
      * The dateTime used to filter tasklist by.
      */
-    private final String dateTime;
+    private final String task;
 
     /**
      * Constructs a find command with a dateTime.
      *
-     * @param dt The dateTime to filter by.
+     * @param t The dateTime to filter by.
      */
-    public FindCommand(String dt) {
-        dateTime = dt;
+    public FindCommand(String t) {
+        task = t;
     }
 
     /**
@@ -33,6 +33,6 @@ public class FindCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
-        ui.showList(taskList.filterTask(dateTime));
+        ui.showList(taskList.findTask(task));
     }
 }

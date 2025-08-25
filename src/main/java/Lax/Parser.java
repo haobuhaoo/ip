@@ -4,6 +4,7 @@ import Lax.Command.AddCommand;
 import Lax.Command.Command;
 import Lax.Command.DeleteCommand;
 import Lax.Command.ExitCommand;
+import Lax.Command.FilterCommand;
 import Lax.Command.FindCommand;
 import Lax.Command.HelpCommand;
 import Lax.Command.LabelCommand;
@@ -17,7 +18,7 @@ public class Parser {
     /**
      * List of available commands.
      */
-    public enum CommandList {LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, HELP, BYE}
+    public enum CommandList {LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, FILTER, HELP, BYE}
 
     /**
      * Parses the user input String and outputs the corresponding <code>Command</code>.
@@ -45,6 +46,9 @@ public class Parser {
             }
             case FIND -> {
                 return new FindCommand(cmd[1].trim());
+            }
+            case FILTER -> {
+                return new FilterCommand(cmd[1].trim());
             }
             case HELP -> {
                 return new HelpCommand();

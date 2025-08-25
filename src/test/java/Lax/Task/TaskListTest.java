@@ -178,6 +178,17 @@ public class TaskListTest {
     }
 
     @Test
+    public void findTask_taskFound_success() {
+        arrayList.add(todo);
+        arrayList.add(deadline);
+        arrayList.add(event);
+
+        assertEquals("Here are the tasks in your list:\n" + "1. [T][ ] read book\n"
+                        + "2. [D][ ] return book (by: Aug 25 2025 01:50pm)",
+                new TaskList(arrayList).findTask("book"));
+    }
+
+    @Test
     public void filterTask_taskFiltered_success() {
         arrayList.add(todo);
         arrayList.add(deadline);

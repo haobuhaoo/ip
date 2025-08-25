@@ -174,6 +174,16 @@ public class TaskList {
         }
     }
 
+    public String findTask(String desc) {
+        ArrayList<Task> newTask = new ArrayList<>(100);
+        for (Task t : taskList) {
+            if (t.getName().contains(desc)) {
+                newTask.add(t);
+            }
+        }
+        return new TaskList(newTask).showList(null);
+    }
+
     /**
      * Filters the whole tasklist for tasks happening on the specific dateTime.
      * <p>

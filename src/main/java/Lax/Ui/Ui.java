@@ -64,7 +64,8 @@ public class Ui {
                 - deadline "task name" /by "due DateTime"
                 - event "task name" /from "start DateTime" /to "end DateTime"
                 - delete "task number"
-                - find "DateTime"
+                - find "task description"
+                - filter "DateTime"
                 - help
                 - bye""");
     }
