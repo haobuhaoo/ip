@@ -1,5 +1,7 @@
 package Lax.Task;
 
+import Lax.Exception.InvalidCommandException;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -7,13 +9,26 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
-import Lax.Exception.InvalidCommandException;
-
+/**
+ * Represents the list of tasks stored in the database file. It has methods to add, delete, label, show,
+ * filter and save the list of tasks.
+ */
 public class TaskList {
+    /**
+     * The arraylist to store the list of task.
+     */
     private final ArrayList<Task> taskList;
 
+    /**
+     * The types of <code>Task</code> available.
+     */
     public enum TaskType {TODO, DEADLINE, EVENT}
 
+    /**
+     * Constructs the list of task with an arraylist.
+     *
+     * @param t The arraylist of task.
+     */
     public TaskList(ArrayList<Task> t) {
         taskList = t;
     }
@@ -22,12 +37,25 @@ public class TaskList {
         return taskList.size();
     }
 
+    /**
+     * Parses the dateTime of the pattern of "dd-MM-yyyy HHmm" into a <code>LocalDateTime</code> object.
+     *
+     * @return <li>The format is "yyyy-MM-ddTHH:mm".</li><li>Eg. "2025-08-26T13:24".</li>
+     * @throws DateTimeParseException If the dateTime cannot be parsed.
+     */
     public LocalDateTime parseDateTime(String dateTime) throws DateTimeParseException {
         return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm"));
     }
 
+    /**
+     * Converts the tasklist into a <code>String</code> for displaying.
+     *
+     * @param dateTime The dateTime used when filtering tasks.
+     * @return A <code>String</code> representation of the tasklist with each task being listed out.
+     */
     public String showList(LocalDateTime dateTime) {
-        String tempString = dateTime == null ? "" : " on " + dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"));
+        String tempString = dateTime == null ? "" : " on "
+                + dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"));
         if (taskList.isEmpty()) return "There is no task in your list" + tempString + ".";
 
         StringBuilder s = new StringBuilder("Here are the tasks in your list" + tempString + ":");
@@ -39,6 +67,20 @@ public class TaskList {
         return s.toString();
     }
 
+    /**
+     * Labels the task based on the command given. It gets the task from the tasklist and labels it, and
+     * returns the task back.
+     * <p>
+     * If tasklist is empty, or if task number is invalid, or if task has been previously labeled, it throws
+     * an <code>InvalidCommandException</code>.
+     *
+     * @param number The task number to be labeled.
+     * @param mark   The command given.
+     *               <code>true</code> if command is mark. <code>false</code> if command is unmark.
+     * @return The task that is being labeled.
+     * @throws InvalidCommandException If no task to be labeled or task has already been previously labeled
+     *                                 or task number is invalid.
+     */
     public Task labelTask(String number, boolean mark) throws InvalidCommandException {
         if (taskList.isEmpty())
             throw new InvalidCommandException("No task to be " + (mark ? "marked" : "unmarked"));
@@ -66,6 +108,18 @@ public class TaskList {
         }
     }
 
+    /**
+     * Adds the new <code>Task</code> into the tasklist. It splits the task description into sections and
+     * creates a <code>Task</code> object.
+     * <p>
+     * If there are missing information or invalid dateTime format, <code>InvalidCommandException</code> and
+     * <code>DateTimeParseException</code> is thrown respectively.
+     *
+     * @param task The task description.
+     * @param type The type of task.
+     * @return The new <code>Task</code> that is added.
+     * @throws InvalidCommandException If there is missing information in the task description.
+     */
     public Task addTask(String task, String type) throws InvalidCommandException {
         try {
             Task t;
@@ -99,6 +153,15 @@ public class TaskList {
         }
     }
 
+    /**
+     * Deletes a <code>Task</code> from the tasklist and returns the deleted <code>Task</code>.
+     * <p>
+     * If tasklist is empty or invalid task number, it throws an <code>InvalidCommandException</code>  .
+     *
+     * @param number The task number.
+     * @return The deleted <code>Task</code>.
+     * @throws InvalidCommandException If tasklist is empty or invalid task number.
+     */
     public Task deleteTask(String number) throws InvalidCommandException {
         if (taskList.isEmpty()) throw new InvalidCommandException("No task to delete.");
 
@@ -111,6 +174,14 @@ public class TaskList {
         }
     }
 
+    /**
+     * Filters the whole tasklist for tasks happening on the specific dateTime.
+     * <p>
+     * If the dateTime is of wrong format, it throws a <code>DateTimeParseException</code>.
+     *
+     * @param dt The dateTime to filter by.
+     * @return A <code>String</code> representation of the filtered tasklist.
+     */
     public String filterTask(String dt) {
         LocalDateTime dateTime = parseDateTime(dt);
         ArrayList<Task> newTask = new ArrayList<>(100);
@@ -129,6 +200,11 @@ public class TaskList {
         return new TaskList(newTask).showList(dateTime);
     }
 
+    /**
+     * Saves the currently tasklist into the database file.
+     *
+     * @throws IOException If there is an error writing to the file.
+     */
     public void save(FileWriter file) throws IOException {
         if (taskList.isEmpty()) return;
 

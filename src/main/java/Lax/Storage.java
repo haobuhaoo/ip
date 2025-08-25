@@ -15,13 +15,36 @@ import Lax.Task.Task;
 import Lax.Task.TaskList;
 import Lax.Task.Todo;
 
+/**
+ * Represents the database of the chatbot specified at the <code>String</code> filePath.
+ */
 public class Storage {
+    /**
+     * The path of the database file.
+     */
     private final String filePath;
 
+    /**
+     * Constructs the database at the specified <code>filePath</code>.
+     *
+     * @param f The file path.
+     */
     public Storage(String f) {
         filePath = f;
     }
 
+    /**
+     * Loads the file specified in <code>filePath</code> by reading every line of the file and converting
+     * it into a <code>Task</code>, which then adds it into an <code>TaskList</code> and is returned.
+     * <p>
+     * If file does not exist, it will create a new file at the exact <code>filePath</code> specified and
+     * returns an empty <code>TaskList</code> instead.
+     * <p>
+     * If the file has been corrupted with anomalous data, such lines will be ignored and reported back to
+     * the user, without stopping the chatbot from continue running.
+     *
+     * @return The list of tasks stored previously or a new empty list.
+     */
     public TaskList loadTask() {
         ArrayList<Task> taskList = new ArrayList<>(100);
         File file = new File(filePath);
@@ -73,6 +96,12 @@ public class Storage {
         return new TaskList(taskList);
     }
 
+    /**
+     * Saves the existing version of <code>TaskList</code> into the file specified by writing directly over
+     * the existing file.
+     *
+     * @param taskList The <code>TaskList</code> that is being read and write into the file.
+     */
     public void saveTask(TaskList taskList) {
         try (FileWriter file = new FileWriter(filePath)) {
             taskList.save(file);

@@ -4,13 +4,33 @@ import Lax.Storage;
 import Lax.Task.TaskList;
 import Lax.Ui.Ui;
 
+/**
+ * Represents a find command with a <code>String</code> dateTime.
+ */
 public class FindCommand extends Command {
+    /**
+     * The dateTime used to filter tasklist by.
+     */
     private final String dateTime;
 
+    /**
+     * Constructs a find command with a dateTime.
+     *
+     * @param dt The dateTime to filter by.
+     */
     public FindCommand(String dt) {
         dateTime = dt;
     }
 
+    /**
+     * {@inheritDoc}
+     * It filters the tasklist for all <code>Task</code> happening on the specified dateTime and displays
+     * the filtered tasklist to the user.
+     *
+     * @param taskList The tasklist to modify.
+     * @param ui       The ui for displaying messages to the user.
+     * @param storage  The database for saving the tasklist.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
         ui.showList(taskList.filterTask(dateTime));
