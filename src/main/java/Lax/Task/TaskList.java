@@ -1,13 +1,13 @@
 package Lax.Task;
 
-import Lax.Exception.InvalidCommandException;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+
+import Lax.Exception.InvalidCommandException;
 
 /**
  * Represents the list of tasks stored in the database file. It has methods to add, delete, label, show,
