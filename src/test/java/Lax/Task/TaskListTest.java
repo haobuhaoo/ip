@@ -184,8 +184,10 @@ public class TaskListTest {
         arrayList.add(event);
 
         // task in tasklist
-        assertEquals("Here are the tasks in your list:\n" + "1. [T][ ] read book\n"
-                        + "2. [D][ ] return book (by: Aug 25 2025 01:50pm)",
+        assertEquals("""
+                        Here are the tasks in your list:
+                        1. [T][ ] read book
+                        2. [D][ ] return book (by: Aug 25 2025 01:50pm)""",
                 new TaskList(arrayList).findTask("book"));
 
         // task not in tasklist
