@@ -183,9 +183,14 @@ public class TaskListTest {
         arrayList.add(deadline);
         arrayList.add(event);
 
+        // task in tasklist
         assertEquals("Here are the tasks in your list:\n" + "1. [T][ ] read book\n"
                         + "2. [D][ ] return book (by: Aug 25 2025 01:50pm)",
                 new TaskList(arrayList).findTask("book"));
+
+        // task not in tasklist
+        assertEquals("There is no task in your list.",
+                new TaskList(arrayList).findTask("task not in list"));
     }
 
     @Test
@@ -194,8 +199,13 @@ public class TaskListTest {
         arrayList.add(deadline);
         arrayList.add(event);
 
+        // task in tasklist
         assertEquals("Here are the tasks in your list on Aug 23 2025 06:00pm:\n"
                         + "1. [D][ ] return book (by: Aug 25 2025 01:50pm)",
                 new TaskList(arrayList).filterTask("23-08-2025 1800"));
+
+        // task not in tasklist
+        assertEquals("There is no task in your list on Jan 01 2050 12:00am.",
+                new TaskList(arrayList).filterTask("01-01-2050 0000"));
     }
 }
