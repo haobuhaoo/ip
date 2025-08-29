@@ -1,4 +1,4 @@
-package Lax.Task;
+package lax.task;
 
 /**
  * Represents a task with a <code>String</code> name and <code>boolean</code> completed.

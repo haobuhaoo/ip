@@ -1,4 +1,4 @@
-package Lax.Task;
+package lax.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import Lax.Exception.InvalidCommandException;
+import lax.exception.InvalidCommandException;
 
 public class TaskListTest {
-    ArrayList<Task> arrayList;
-    Todo todo;
-    Deadline deadline;
-    Event event;
+    private ArrayList<Task> arrayList;
+    private Todo todo;
+    private Deadline deadline;
+    private Event event;
 
     @BeforeEach
     void setup() {

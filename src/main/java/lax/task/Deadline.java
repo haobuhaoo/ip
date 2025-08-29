@@ -1,4 +1,4 @@
-package Lax.Task;
+package lax.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +52,7 @@ public class Deadline extends Task {
      * {@inheritDoc}
      *
      * @return <li>"deadline | 1 | name | 2025-08-26T13:24" if completed</li>
-     * <li>"deadline | 0 | name | 2025-08-26T13:24" if not completed.</li>
+     *         <li>"deadline | 0 | name | 2025-08-26T13:24" if not completed.</li>
      */
     @Override
     public String toFile() {
@@ -63,7 +63,7 @@ public class Deadline extends Task {
      * {@inheritDoc}
      *
      * @return <li>"[D][X] name (by: Aug 26 2025 01:24pm)" if completed.</li>
-     * <li>"[D][ ] name (by: Aug 26 2025 01:24pm)" if not completed.</li>
+     *         <li>"[D][ ] name (by: Aug 26 2025 01:24pm)" if not completed.</li>
      */
     @Override
     public String toString() {

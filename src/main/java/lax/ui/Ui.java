@@ -1,8 +1,8 @@
-package Lax.Ui;
+package lax.ui;
 
 import java.util.Scanner;
 
-import Lax.Task.TaskList;
+import lax.task.TaskList;
 
 /**
  * Represents the User Interface of the chatbot. It prints out messages to the user.

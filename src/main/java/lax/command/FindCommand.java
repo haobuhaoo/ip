@@ -1,8 +1,8 @@
-package Lax.Command;
+package lax.command;
 
-import Lax.Storage;
-import Lax.Task.TaskList;
-import Lax.Ui.Ui;
+import lax.Storage;
+import lax.task.TaskList;
+import lax.ui.Ui;
 
 /**
  * Represents a find command with a <code>String</code> task.

@@ -1,4 +1,4 @@
-package Lax;
+package lax;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,16 +13,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import Lax.Task.Deadline;
-import Lax.Task.Event;
-import Lax.Task.Task;
-import Lax.Task.TaskList;
-import Lax.Task.Todo;
+import lax.task.Deadline;
+import lax.task.Event;
+import lax.task.Task;
+import lax.task.TaskList;
+import lax.task.Todo;
 
 public class StorageTest {
-    String filePath;
     @TempDir
     Path tempDir;
+    private String filePath;
 
     @BeforeEach
     void setup() {

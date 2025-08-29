@@ -1,4 +1,4 @@
-package Lax.Task;
+package lax.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,7 +64,7 @@ public class Event extends Task {
      * {@inheritDoc}
      *
      * @return <li>"event | 1 | name | 2025-08-26T13:24 | 2025-08-27T04:56" if completed</li>
-     * <li>"event | 0 | name | 2025-08-26T13:24 | 2025-08-27T04:56" if not completed.</li>
+     *         <li>"event | 0 | name | 2025-08-26T13:24 | 2025-08-27T04:56" if not completed.</li>
      */
     @Override
     public String toFile() {
@@ -75,10 +75,11 @@ public class Event extends Task {
      * {@inheritDoc}
      *
      * @return <li>"[E][X] name (from: Aug 26 2025 01:24pm to: Aug 27 2025 04:56am)" if completed.</li>
-     * <li>"[E][ ] name (from: Aug 26 2025 01:24pm to: Aug 27 2025 04:56am)" if not completed.</li>
+     *         <li>"[E][ ] name (from: Aug 26 2025 01:24pm to: Aug 27 2025 04:56am)" if not completed.</li>
      */
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + parseDateTime(startDate) + " to: " + parseDateTime(endDate) + ")";
+        return "[E]" + super.toString()
+                + " (from: " + parseDateTime(startDate) + " to: " + parseDateTime(endDate) + ")";
     }
 }

@@ -1,4 +1,4 @@
-package Lax;
+package lax;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,11 +9,11 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import Lax.Task.Deadline;
-import Lax.Task.Event;
-import Lax.Task.Task;
-import Lax.Task.TaskList;
-import Lax.Task.Todo;
+import lax.task.Deadline;
+import lax.task.Event;
+import lax.task.Task;
+import lax.task.TaskList;
+import lax.task.Todo;
 
 /**
  * Represents the database of the chatbot specified at the <code>String</code> filePath.
@@ -63,7 +63,9 @@ public class Storage {
             int corrupted = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
-                if (line.isEmpty()) continue;
+                if (line.isEmpty()) {
+                    continue;
+                }
 
                 String[] data = line.split("\\|");
                 boolean completed = data[1].trim().equals("1");
@@ -76,6 +78,7 @@ public class Storage {
                             LocalDateTime.parse(data[3].trim()));
                     case EVENT -> t = new Event(data[2].trim(), completed,
                             LocalDateTime.parse(data[3].trim()), LocalDateTime.parse(data[4].trim()));
+                    default -> { } //do nothing
                     }
                     taskList.add(t);
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {

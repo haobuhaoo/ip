@@ -1,4 +1,4 @@
-package Lax;
+package lax;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -6,15 +6,15 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
-import Lax.Command.AddCommand;
-import Lax.Command.DeleteCommand;
-import Lax.Command.ExitCommand;
-import Lax.Command.FilterCommand;
-import Lax.Command.FindCommand;
-import Lax.Command.HelpCommand;
-import Lax.Command.LabelCommand;
-import Lax.Command.ListCommand;
-import Lax.Exception.InvalidCommandException;
+import lax.command.AddCommand;
+import lax.command.DeleteCommand;
+import lax.command.ExitCommand;
+import lax.command.FilterCommand;
+import lax.command.FindCommand;
+import lax.command.HelpCommand;
+import lax.command.LabelCommand;
+import lax.command.ListCommand;
+import lax.exception.InvalidCommandException;
 
 public class ParserTest {
     @Test

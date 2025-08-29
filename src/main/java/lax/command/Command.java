@@ -1,9 +1,9 @@
-package Lax.Command;
+package lax.command;
 
-import Lax.Exception.InvalidCommandException;
-import Lax.Storage;
-import Lax.Task.TaskList;
-import Lax.Ui.Ui;
+import lax.Storage;
+import lax.exception.InvalidCommandException;
+import lax.task.TaskList;
+import lax.ui.Ui;
 
 /**
  * Represents a command with a <code>boolean</code> exit that is primarily false unless the command is an

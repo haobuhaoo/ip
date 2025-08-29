@@ -1,4 +1,4 @@
-package Lax.Exception;
+package lax.exception;
 
 /**
  * Represents the <code>Exception</code> that occurs when an invalid command is keyed in by the user.
