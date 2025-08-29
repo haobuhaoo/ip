@@ -37,7 +37,9 @@ public class StorageTest {
     @Test
     public void loadTask_fileExist_success() throws IOException {
         File f = new File(filePath);
-        f.getParentFile().mkdirs();
+        if (!f.getParentFile().mkdirs()) {
+            System.out.println("Error creating parent directory.");
+        }
 
         FileWriter file = new FileWriter(filePath);
         file.write("todo | 0 | return book\n");
@@ -57,7 +59,9 @@ public class StorageTest {
         TaskList t = new TaskList(arrayList);
 
         File f = new File(filePath);
-        f.getParentFile().mkdirs();
+        if (!f.getParentFile().mkdirs()) {
+            System.out.println("Error creating parent directory.");
+        }
         new Storage(filePath).saveTask(t);
 
         assertEquals(3, t.size());

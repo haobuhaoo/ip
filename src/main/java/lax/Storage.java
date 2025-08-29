@@ -50,9 +50,17 @@ public class Storage {
         File file = new File(filePath);
 
         if (!file.exists()) {
-            file.getParentFile().mkdirs();
+            File parent = file.getParentFile();
+            if (parent != null && !parent.exists()) {
+                if (!parent.mkdirs()) {
+                    System.out.println("Error creating parent directory.");
+                }
+            }
+
             try {
-                file.createNewFile();
+                if (!file.createNewFile()) {
+                    System.out.println("File could not be created.");
+                }
             } catch (IOException e) {
                 System.out.println("Error creating new file: " + e.getMessage());
             }
