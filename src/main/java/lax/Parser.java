@@ -1,15 +1,15 @@
-package Lax;
+package lax;
 
-import Lax.Command.AddCommand;
-import Lax.Command.Command;
-import Lax.Command.DeleteCommand;
-import Lax.Command.ExitCommand;
-import Lax.Command.FilterCommand;
-import Lax.Command.FindCommand;
-import Lax.Command.HelpCommand;
-import Lax.Command.LabelCommand;
-import Lax.Command.ListCommand;
-import Lax.Exception.InvalidCommandException;
+import lax.command.AddCommand;
+import lax.command.Command;
+import lax.command.DeleteCommand;
+import lax.command.ExitCommand;
+import lax.command.FilterCommand;
+import lax.command.FindCommand;
+import lax.command.HelpCommand;
+import lax.command.LabelCommand;
+import lax.command.ListCommand;
+import lax.exception.InvalidCommandException;
 
 /**
  * Represents the tool used to analyse user inputs.
@@ -18,7 +18,7 @@ public class Parser {
     /**
      * List of available commands.
      */
-    public enum CommandList {LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, FILTER, HELP, BYE}
+    public enum CommandList { LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, FILTER, HELP, BYE }
 
     /**
      * Parses the user input String and outputs the corresponding <code>Command</code>.

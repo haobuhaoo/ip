@@ -1,4 +1,4 @@
-package Lax.Task;
+package lax.task;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
-import Lax.Exception.InvalidCommandException;
+import lax.exception.InvalidCommandException;
 
 /**
  * Represents the list of tasks stored in the database file. It has methods to add, delete, label, show,
@@ -22,7 +22,7 @@ public class TaskList {
     /**
      * The types of <code>Task</code> available.
      */
-    public enum TaskType {TODO, DEADLINE, EVENT}
+    public enum TaskType { TODO, DEADLINE, EVENT }
 
     /**
      * Constructs the list of task with an arraylist.
@@ -56,7 +56,9 @@ public class TaskList {
     public String showList(LocalDateTime dateTime) {
         String tempString = dateTime == null ? "" : " on "
                 + dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"));
-        if (taskList.isEmpty()) return "There is no task in your list" + tempString + ".";
+        if (taskList.isEmpty()) {
+            return "There is no task in your list" + tempString + ".";
+        }
 
         StringBuilder s = new StringBuilder("Here are the tasks in your list" + tempString + ":");
         int n = 1;
@@ -82,8 +84,9 @@ public class TaskList {
      *                                 or task number is invalid.
      */
     public Task labelTask(String number, boolean mark) throws InvalidCommandException {
-        if (taskList.isEmpty())
+        if (taskList.isEmpty()) {
             throw new InvalidCommandException("No task to be " + (mark ? "marked" : "unmarked"));
+        }
 
         try {
             Task t = taskList.get(Integer.parseInt(number) - 1);
@@ -163,7 +166,9 @@ public class TaskList {
      * @throws InvalidCommandException If tasklist is empty or invalid task number.
      */
     public Task deleteTask(String number) throws InvalidCommandException {
-        if (taskList.isEmpty()) throw new InvalidCommandException("No task to delete.");
+        if (taskList.isEmpty()) {
+            throw new InvalidCommandException("No task to delete.");
+        }
 
         try {
             return taskList.remove(Integer.parseInt(number) - 1);
@@ -222,7 +227,9 @@ public class TaskList {
      * @throws IOException If there is an error writing to the file.
      */
     public void save(FileWriter file) throws IOException {
-        if (taskList.isEmpty()) return;
+        if (taskList.isEmpty()) {
+            return;
+        }
 
         for (Task t : taskList) {
             file.write(t.toFile() + "\n");

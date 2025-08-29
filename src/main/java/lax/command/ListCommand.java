@@ -1,16 +1,16 @@
-package Lax.Command;
+package lax.command;
 
-import Lax.Storage;
-import Lax.Task.TaskList;
-import Lax.Ui.Ui;
+import lax.Storage;
+import lax.task.TaskList;
+import lax.ui.Ui;
 
 /**
- * Represents an exit command.
+ * Represents a list command.
  */
-public class ExitCommand extends Command {
+public class ListCommand extends Command {
     /**
      * {@inheritDoc}
-     * It sets the exit status of the command to <code>true</code> and closes the chatbot.
+     * It displays the full tasklist to the user.
      *
      * @param taskList The tasklist to modify.
      * @param ui       The ui for displaying messages to the user.
@@ -18,7 +18,6 @@ public class ExitCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
-        ui.showExit();
-        super.setExit(true);
+        ui.showList(taskList);
     }
 }

@@ -1,4 +1,4 @@
-package Lax;
+package lax;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,16 +13,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import Lax.Task.Deadline;
-import Lax.Task.Event;
-import Lax.Task.Task;
-import Lax.Task.TaskList;
-import Lax.Task.Todo;
+import lax.task.Deadline;
+import lax.task.Event;
+import lax.task.Task;
+import lax.task.TaskList;
+import lax.task.Todo;
 
 public class StorageTest {
-    String filePath;
     @TempDir
     Path tempDir;
+    private String filePath;
 
     @BeforeEach
     void setup() {
@@ -37,7 +37,9 @@ public class StorageTest {
     @Test
     public void loadTask_fileExist_success() throws IOException {
         File f = new File(filePath);
-        f.getParentFile().mkdirs();
+        if (!f.getParentFile().mkdirs()) {
+            System.out.println("Error creating parent directory.");
+        }
 
         FileWriter file = new FileWriter(filePath);
         file.write("todo | 0 | return book\n");
@@ -57,7 +59,9 @@ public class StorageTest {
         TaskList t = new TaskList(arrayList);
 
         File f = new File(filePath);
-        f.getParentFile().mkdirs();
+        if (!f.getParentFile().mkdirs()) {
+            System.out.println("Error creating parent directory.");
+        }
         new Storage(filePath).saveTask(t);
 
         assertEquals(3, t.size());

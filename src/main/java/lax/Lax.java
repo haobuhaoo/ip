@@ -1,12 +1,12 @@
-package Lax;
+package lax;
 
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
-import Lax.Command.Command;
-import Lax.Exception.InvalidCommandException;
-import Lax.Task.TaskList;
-import Lax.Ui.Ui;
+import lax.command.Command;
+import lax.exception.InvalidCommandException;
+import lax.task.TaskList;
+import lax.ui.Ui;
 
 /**
  * Represents the chatbot with an <code>Ui</code>, <code>Storage</code> and <code>TaskList</code>.
