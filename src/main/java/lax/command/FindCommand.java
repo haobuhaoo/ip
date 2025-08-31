@@ -32,7 +32,7 @@ public class FindCommand extends Command {
      * @param storage  The database for saving the tasklist.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
-        ui.showList(taskList.findTask(task));
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
+        return ui.showList(taskList.findTask(task));
     }
 }
