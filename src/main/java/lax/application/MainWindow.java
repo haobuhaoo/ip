@@ -69,14 +69,20 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
+     * Adds variable number of dialogs into the dialog container.
+     */
+    private void addDialogs(DialogBox... dialogs) {
+        dialogContainer.getChildren().addAll(dialogs);
+    }
+
+    /**
      * Injects the Lax instance and starts the conversation by displaying the welcome message to the user.
      *
      * @param l Instance of Lax.
      */
     public void setLax(Lax l) {
         lax = l;
-        dialogContainer.getChildren()
-                .add(DialogBox.getLaxDialog(new Ui().showWelcome(), laxImage, "Start"));
+        addDialogs(DialogBox.getLaxDialog(new Ui().showWelcome(), laxImage, "Start"));
     }
 
     /**
@@ -89,17 +95,12 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText().trim().toLowerCase();
         if (input.isEmpty()) {
-            dialogContainer.getChildren()
-                    .add(DialogBox.getLaxDialog(new Ui().emptyCmd(), laxImage, "Empty String"));
+            addDialogs(DialogBox.getLaxDialog(new Ui().emptyCmd(), laxImage, "EmptyString"));
             return;
         }
 
-        String response = lax.getResponse(input);
-        String commandType = lax.getCommandType();
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getLaxDialog(response, laxImage, commandType)
-        );
+        addDialogs(DialogBox.getUserDialog(input, userImage),
+                DialogBox.getLaxDialog(lax.getResponse(input), laxImage, lax.getCommandType()));
         userInput.clear();
 
         if (input.trim().equalsIgnoreCase("bye")) {
