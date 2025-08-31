@@ -1,7 +1,6 @@
 package lax;
 
 import java.time.format.DateTimeParseException;
-import java.util.Scanner;
 
 import lax.command.Command;
 import lax.exception.InvalidCommandException;
@@ -30,6 +29,11 @@ public class Lax {
     private static TaskList taskList;
 
     /**
+     * Type of command keyed in by the user.
+     */
+    private String commandType;
+
+    /**
      * Constructs the chatbot with a String <code>filePath</code> to store the list of tasks to or retrieve
      * existing tasks from. It then loads the file into <code>taskList</code>.
      */
@@ -40,35 +44,23 @@ public class Lax {
     }
 
     /**
-     * Starts the chatbot for user interactions.
+     * Generates a response for the user's chat message.
      */
-    public void run() {
-        Scanner scanner = new Scanner(System.in);
-
-        ui.showWelcome();
-        boolean exit = false;
-        while (!exit) {
-            try {
-                String input = ui.readInput(scanner);
-                if (input.isEmpty()) {
-                    ui.emptyCmd();
-                    continue;
-                }
-
-                Command command = Parser.parse(input);
-                command.execute(taskList, ui, storage);
-                exit = command.isExit();
-            } catch (InvalidCommandException e) {
-                ui.showError(e.getMessage());
-            } catch (DateTimeParseException e) {
-                ui.invalidDateTime();
-            }
+    public String getResponse(String input) {
+        try {
+            Command command = Parser.parse(input);
+            commandType = command.getClass().getSimpleName();
+            return command.execute(taskList, ui, storage);
+        } catch (InvalidCommandException e) {
+            commandType = "InvalidCommand";
+            return ui.showError(e.getMessage());
+        } catch (DateTimeParseException e) {
+            commandType = "InvalidCommand";
+            return ui.invalidDateTime();
         }
-
-        scanner.close();
     }
 
-    public static void main(String[] args) {
-        new Lax("./data/data.txt").run();
+    public String getCommandType() {
+        return commandType;
     }
 }

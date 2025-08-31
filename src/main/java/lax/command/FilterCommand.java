@@ -32,7 +32,7 @@ public class FilterCommand extends Command {
      * @param storage  The database for saving the tasklist.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
-        ui.showList(taskList.filterTask(dateTime));
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
+        return ui.showList(taskList.filterTask(dateTime));
     }
 }

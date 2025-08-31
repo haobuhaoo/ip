@@ -42,10 +42,10 @@ public class LabelCommand extends Command {
      * @throws InvalidCommandException If the user inputs an invalid command.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) throws InvalidCommandException {
+    public String execute(TaskList taskList, Ui ui, Storage storage) throws InvalidCommandException {
         Task t = taskList.labelTask(taskNumber, mark);
         storage.saveTask(taskList);
-        ui.showSuccessMessage(print(t));
+        return ui.showSuccessMessage(print(t));
     }
 
     /**

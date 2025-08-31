@@ -35,10 +35,10 @@ public class DeleteCommand extends Command {
      * @throws InvalidCommandException If the user inputs an invalid command.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) throws InvalidCommandException {
+    public String execute(TaskList taskList, Ui ui, Storage storage) throws InvalidCommandException {
         Task t = taskList.deleteTask(taskNumber);
         storage.saveTask(taskList);
-        ui.showSuccessMessage(print(t, taskList));
+        return ui.showSuccessMessage(print(t, taskList));
     }
 
     /**
