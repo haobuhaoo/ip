@@ -44,6 +44,9 @@ public class DialogBox extends HBox {
             System.out.println("Error creating dialog box: " + e.getMessage());
         }
 
+        if (text.isEmpty() || img == null) {
+            System.out.println("Error setting " + (text.isEmpty() ? "text message" : "image"));
+        }
         dialog.setText(text);
         displayPicture.setImage(img);
     }

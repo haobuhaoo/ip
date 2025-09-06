@@ -14,6 +14,7 @@ import lax.command.FindCommand;
 import lax.command.HelpCommand;
 import lax.command.LabelCommand;
 import lax.command.ListCommand;
+import lax.command.Parser;
 import lax.exception.InvalidCommandException;
 
 public class ParserTest {
