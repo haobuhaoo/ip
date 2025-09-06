@@ -1,11 +1,11 @@
 package lax.task;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lax.exception.InvalidCommandException;
 
@@ -77,13 +77,10 @@ public class TaskList {
             return "There is no task in your list" + dateString + ".";
         }
 
-        StringBuilder s = new StringBuilder("Here are the tasks in your list" + dateString + ":");
-        int n = 1;
-        for (Task i : taskList) {
-            s.append("\n").append(n).append(". ").append(i.toString());
-            n++;
-        }
-        return s.toString();
+        String taskString = IntStream.range(1, taskList.size() + 1)
+                .mapToObj(i -> i + ". " + taskList.get(i - 1).toString())
+                .collect(Collectors.joining("\n"));
+        return "Here are the tasks in your list" + dateString + ":\n" + taskString;
     }
 
     /**
@@ -240,12 +237,9 @@ public class TaskList {
      * @return A <code>String</code> representation of the filtered tasklist.
      */
     public String findTask(String desc) {
-        ArrayList<Task> newTask = new ArrayList<>(100);
-        for (Task t : taskList) {
-            if (t.getName().contains(desc)) {
-                newTask.add(t);
-            }
-        }
+        ArrayList<Task> newTask = taskList.stream()
+                .filter(t -> t.getName().contains(desc))
+                .collect(Collectors.toCollection(ArrayList::new));
         return new TaskList(newTask).showList(null);
     }
 
@@ -259,34 +253,30 @@ public class TaskList {
      */
     public String filterTask(String dt) {
         LocalDateTime dateTime = parseDateTime(dt);
-        ArrayList<Task> newTask = new ArrayList<>(100);
-        for (Task t : taskList) {
-            if (t instanceof Deadline temp) {
-                if (temp.getDueDate().isEqual(dateTime) || temp.getDueDate().isAfter(dateTime)) {
-                    newTask.add(t);
-                }
-            } else if (t instanceof Event temp) {
-                if ((temp.getStartDate().isEqual(dateTime) || temp.getStartDate().isBefore(dateTime))
-                        && (temp.getEndDate().isEqual(dateTime) || temp.getEndDate().isAfter(dateTime))) {
-                    newTask.add(t);
-                }
-            }
-        }
+        ArrayList<Task> newTask = taskList.stream()
+                .filter(t -> {
+                    if (t instanceof Deadline temp) {
+                        return dateTime.isBefore(temp.getDueDate());
+                    } else if (t instanceof Event temp) {
+                        boolean isAfterStartDate = dateTime.isAfter(temp.getStartDate());
+                        boolean isBeforeEndDate = dateTime.isBefore(temp.getEndDate());
+                        return isAfterStartDate && isBeforeEndDate;
+                    } else {
+                        return false;
+                    }
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
         return new TaskList(newTask).showList(dateTime);
     }
 
     /**
-     * Saves the currently tasklist into the database file.
+     * Serialize the current tasklist into the correct format.
      *
-     * @throws IOException If there is an error writing to the file.
+     * @return An <code>ArrayList</code> of <code>Task</code> in the correct format.
      */
-    public void save(FileWriter file) throws IOException {
-        if (taskList.isEmpty()) {
-            return;
-        }
-
-        for (Task t : taskList) {
-            file.write(t.toFile() + "\n");
-        }
+    public ArrayList<String> serialize() {
+        return taskList.stream()
+                .map(Task::toFile)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

@@ -1,13 +1,15 @@
 package lax;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lax.task.Deadline;
 import lax.task.Event;
@@ -86,20 +88,17 @@ public class Storage {
 
     /**
      * Increments the total count of corrupted tasks and prints out the line that is corrupted.
-     *
-     * @return The new total corrupted count.
      */
-    private int handleCorruptedTask(int corrupted, String line) {
-        corrupted++;
+    private void handleCorruptedTask(int[] corrupted, String line) {
+        corrupted[0]++;
         System.out.println("Skipping corrupted task: " + line);
-        return corrupted;
     }
 
     /**
      * Prints the total number of corrupted tasks in the file.
      */
-    private void printTotalCorruptedTasks(int corrupted) {
-        System.out.println("Total Corrupted Tasks: " + corrupted + "\n");
+    private void printTotalCorruptedTasks(int[] corrupted) {
+        System.out.println("Total Corrupted Tasks: " + corrupted[0] + "\n");
     }
 
     /**
@@ -124,28 +123,28 @@ public class Storage {
             return new TaskList(taskList);
         }
 
-        try (Scanner scanner = new Scanner(file)) {
-            int corrupted = 0;
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
+        try (Stream<String> lines = Files.lines(file.toPath())) {
+            int[] corrupted = { 0 };
+            taskList = lines.map(String::trim)
+                    .filter(line -> !line.isEmpty())
+                    .map(line -> {
+                                try {
+                                    return createTask(line);
+                                } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+                                    throw new RuntimeException(e);
+                                } catch (DateTimeParseException e) {
+                                    handleCorruptedTask(corrupted, line);
+                                    return null;
+                                }
+                            }
+                    )
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toCollection(ArrayList::new));
 
-                try {
-                    Task t = createTask(line);
-                    taskList.add(t);
-                } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-                    throw new RuntimeException("Invalid task format: " + e);
-                } catch (DateTimeParseException e) {
-                    corrupted = handleCorruptedTask(corrupted, line);
-                }
-            }
-
-            if (corrupted > 0) {
+            if (corrupted[0] > 0) {
                 printTotalCorruptedTasks(corrupted);
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.out.println("Error reading file from hard disk: " + e.getMessage());
         }
 
@@ -159,10 +158,11 @@ public class Storage {
      * @param taskList The <code>TaskList</code> that is being read and write into the file.
      */
     public void saveTask(TaskList taskList) {
-        try (FileWriter file = new FileWriter(filePath)) {
-            taskList.save(file);
+        try {
+            Path path = new File(filePath).toPath();
+            Files.write(path, taskList.serialize());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error saving task: " + e);
         }
     }
 }
