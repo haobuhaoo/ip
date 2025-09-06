@@ -1,13 +1,15 @@
 package lax;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lax.task.Deadline;
 import lax.task.Event;
@@ -67,40 +69,49 @@ public class Storage {
             return new TaskList(taskList);
         }
 
-        try (Scanner scanner = new Scanner(file)) {
-            int corrupted = 0;
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
+        try (Stream<String> lines = Files.lines(file.toPath())) {
+            int[] corrupted = { 0 };
+            taskList = lines
+                    .map(String::trim)
+                    .filter(line -> !line.isEmpty())
+                    .map(line -> {
+                                try {
+                                    String[] data = line.split("\\|");
+                                    boolean completed = data[1].trim().equals("1");
 
-                String[] data = line.split("\\|");
-                boolean completed = data[1].trim().equals("1");
+                                    switch (TaskList.TaskType.valueOf(data[0].trim().toUpperCase())) {
+                                    case TODO -> {
+                                        return new Todo(data[2].trim(), completed);
+                                    }
+                                    case DEADLINE -> {
+                                        return new Deadline(data[2].trim(), completed,
+                                                LocalDateTime.parse(data[3].trim()));
+                                    }
+                                    case EVENT -> {
+                                        return new Event(data[2].trim(), completed,
+                                                LocalDateTime.parse(data[3].trim()),
+                                                LocalDateTime.parse(data[4].trim()));
+                                    }
+                                    default -> {
+                                        return null;
+                                    }
+                                    }
+                                } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+                                    throw new RuntimeException(e);
+                                } catch (DateTimeParseException e) {
+                                    corrupted[0]++;
+                                    System.out.println("Skipping corrupted task: " + line);
+                                    return null;
+                                }
+                            }
+                    )
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toCollection(ArrayList::new));
 
-                try {
-                    Task t = null;
-                    switch (TaskList.TaskType.valueOf(data[0].trim().toUpperCase())) {
-                    case TODO -> t = new Todo(data[2].trim(), completed);
-                    case DEADLINE -> t = new Deadline(data[2].trim(), completed,
-                            LocalDateTime.parse(data[3].trim()));
-                    case EVENT -> t = new Event(data[2].trim(), completed,
-                            LocalDateTime.parse(data[3].trim()), LocalDateTime.parse(data[4].trim()));
-                    default -> { } //do nothing
-                    }
-                    taskList.add(t);
-                } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-                    throw new RuntimeException(e);
-                } catch (DateTimeParseException e) {
-                    corrupted++;
-                    System.out.println("Skipping corrupted task: " + line);
-                }
+            if (corrupted[0] > 0) {
+                System.out.println("Total Corrupted Tasks: " + corrupted[0] + "\n");
             }
-
-            if (corrupted > 0) {
-                System.out.println("Total Corrupted Tasks: " + corrupted + "\n");
-            }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.out.println("Error reading file from hard disk: " + e.getMessage());
         }
 
@@ -114,10 +125,11 @@ public class Storage {
      * @param taskList The <code>TaskList</code> that is being read and write into the file.
      */
     public void saveTask(TaskList taskList) {
-        try (FileWriter file = new FileWriter(filePath)) {
-            taskList.save(file);
+        try {
+            Path path = new File(filePath).toPath();
+            Files.write(path, taskList.serialize());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error saving task: " + e);
         }
     }
 }
