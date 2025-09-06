@@ -50,6 +50,7 @@ public class Lax {
      * Generates a response for the user's chat message.
      */
     public String getResponse(String input) {
+        String invalidCmd = "InvalidCommand";
         try {
             Command command = Parser.parse(input);
             commandType = command.getClass().getSimpleName();
@@ -57,10 +58,10 @@ public class Lax {
 
             return command.execute(taskList, ui, storage);
         } catch (InvalidCommandException e) {
-            commandType = "InvalidCommand";
+            commandType = invalidCmd;
             return ui.showError(e.getMessage());
         } catch (DateTimeParseException e) {
-            commandType = "InvalidCommand";
+            commandType = invalidCmd;
             return ui.invalidDateTime();
         }
     }

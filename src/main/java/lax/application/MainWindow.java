@@ -86,6 +86,18 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
+     * Exits the chatbot after 3 seconds, without the user doing it manually.
+     */
+    private void exit() {
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        delay.setOnFinished(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        delay.play();
+    }
+
+    /**
      * Creates two dialog boxes, one echoing user input and the other containing Lax's reply and then appends
      * them to the dialog container. Clears the user input after processing.
      * <p>
@@ -104,12 +116,7 @@ public class MainWindow extends AnchorPane {
         userInput.clear();
 
         if (input.trim().equalsIgnoreCase("bye")) {
-            PauseTransition delay = new PauseTransition(Duration.seconds(3));
-            delay.setOnFinished(e -> {
-                Platform.exit();
-                System.exit(0);
-            });
-            delay.play();
+            exit();
         }
     }
 }
