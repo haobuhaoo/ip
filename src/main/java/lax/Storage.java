@@ -76,6 +76,8 @@ public class Storage {
                 }
 
                 String[] data = line.split("\\|");
+                assert data.length >= 2 : "tasks in the file should at least have the type and label";
+
                 boolean completed = data[1].trim().equals("1");
 
                 try {
@@ -88,6 +90,8 @@ public class Storage {
                             LocalDateTime.parse(data[3].trim()), LocalDateTime.parse(data[4].trim()));
                     default -> { } //do nothing
                     }
+
+                    assert t != null : "task cannot be null";
                     taskList.add(t);
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
                     throw new RuntimeException(e);
