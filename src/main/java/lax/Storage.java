@@ -67,6 +67,8 @@ public class Storage {
      */
     private Task createTask(String line) throws DateTimeParseException {
         String[] data = line.split("\\|");
+        assert data.length >= 2 : "tasks in the file should at least have the type and label";
+
         boolean completed = data[1].trim().equals("1");
 
         switch (TaskList.TaskType.valueOf(data[0].trim().toUpperCase())) {

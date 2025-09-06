@@ -3,6 +3,7 @@ package lax;
 import java.time.format.DateTimeParseException;
 
 import lax.command.Command;
+import lax.command.Parser;
 import lax.exception.InvalidCommandException;
 import lax.task.TaskList;
 import lax.ui.Ui;
@@ -41,6 +42,8 @@ public class Lax {
         ui = new Ui();
         storage = new Storage(filePath);
         taskList = storage.loadTask();
+
+        assert taskList != null : "taskList should not be null";
     }
 
     /**
@@ -51,6 +54,8 @@ public class Lax {
         try {
             Command command = Parser.parse(input);
             commandType = command.getClass().getSimpleName();
+            assert !commandType.isEmpty() : "command type should not be empty";
+
             return command.execute(taskList, ui, storage);
         } catch (InvalidCommandException e) {
             commandType = invalidCmd;

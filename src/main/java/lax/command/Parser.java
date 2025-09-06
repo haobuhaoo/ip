@@ -1,14 +1,5 @@
-package lax;
+package lax.command;
 
-import lax.command.AddCommand;
-import lax.command.Command;
-import lax.command.DeleteCommand;
-import lax.command.ExitCommand;
-import lax.command.FilterCommand;
-import lax.command.FindCommand;
-import lax.command.HelpCommand;
-import lax.command.LabelCommand;
-import lax.command.ListCommand;
 import lax.exception.InvalidCommandException;
 
 /**
@@ -29,6 +20,7 @@ public class Parser {
      */
     public static Command parse(String command) throws InvalidCommandException {
         String[] cmd = command.split(" ", 2);
+        assert cmd.length <= 2 : "command input should have a type and details after the type";
 
         try {
             switch (CommandList.valueOf(cmd[0].trim().toUpperCase())) {
