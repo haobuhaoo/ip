@@ -15,6 +15,16 @@ import lax.exception.InvalidCommandException;
  */
 public class TaskList {
     /**
+     * The format of the dateTime that user inputs.
+     */
+    private static final DateTimeFormatter INPUT_DATETIME_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
+
+    /**
+     * The format of the dateTime that the chatbot outputs.
+     */
+    private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma");
+
+    /**
      * The arraylist to store the list of task.
      */
     private final ArrayList<Task> taskList;
@@ -44,7 +54,36 @@ public class TaskList {
      * @throws DateTimeParseException If the dateTime cannot be parsed.
      */
     public LocalDateTime parseDateTime(String dateTime) throws DateTimeParseException {
-        return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm"));
+        return LocalDateTime.parse(dateTime, INPUT_DATETIME_FORMAT);
+    }
+
+    /**
+     * Parses the dateTime into a string.
+     *
+     * @return An empty string if dateTime is null. Else, a string dateTime in the format of
+     *         "MMM dd yyyy hh:mma"
+     */
+    private String getDateString(LocalDateTime dateTime) {
+        return dateTime == null
+                ? ""
+                : " on " + dateTime.format(OUTPUT_DATETIME_FORMAT);
+    }
+
+    /**
+     * Parses the taskList into a string, with the timestamp if dateTime is not null.
+     */
+    private String createStringList(String dateString) {
+        if (taskList.isEmpty()) {
+            return "There is no task in your list" + dateString + ".";
+        }
+
+        StringBuilder s = new StringBuilder("Here are the tasks in your list" + dateString + ":");
+        int n = 1;
+        for (Task i : taskList) {
+            s.append("\n").append(n).append(". ").append(i.toString());
+            n++;
+        }
+        return s.toString();
     }
 
     /**
@@ -54,19 +93,34 @@ public class TaskList {
      * @return A <code>String</code> representation of the tasklist with each task being listed out.
      */
     public String showList(LocalDateTime dateTime) {
-        String tempString = dateTime == null ? "" : " on "
-                + dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"));
-        if (taskList.isEmpty()) {
-            return "There is no task in your list" + tempString + ".";
-        }
+        String dateString = getDateString(dateTime);
+        return createStringList(dateString);
+    }
 
-        StringBuilder s = new StringBuilder("Here are the tasks in your list" + tempString + ":");
-        int n = 1;
-        for (Task i : taskList) {
-            s.append("\n").append(n).append(". ").append(i.toString());
-            n++;
+    /**
+     * Updates the task label.
+     *
+     * @param number The index of the <code>Task</code> in the taskList.
+     * @param mark   Mark or Unmark the <code>Task</code>.
+     * @return The <code>Task</code> that is modified.
+     * @throws InvalidCommandException When <code>Task</code> is already labelled as <code>mark</code>.
+     */
+    private Task updateTaskLabel(String number, boolean mark) throws InvalidCommandException {
+        Task t = taskList.get(Integer.parseInt(number) - 1);
+        if (mark) {
+            if (t.isCompleted()) {
+                throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as done");
+            }
+
+            t.markTask();
+        } else {
+            if (!t.isCompleted()) {
+                throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as not done");
+            }
+
+            t.unmarkTask();
         }
-        return s.toString();
+        return t;
     }
 
     /**
@@ -89,25 +143,46 @@ public class TaskList {
         }
 
         try {
-            Task t = taskList.get(Integer.parseInt(number) - 1);
-            if (mark) {
-                if (t.isCompleted()) {
-                    throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as done");
-                }
-
-                t.markTask();
-            } else {
-                if (!t.isCompleted()) {
-                    throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as not done");
-                }
-
-                t.unmarkTask();
-            }
-            return t;
+            return updateTaskLabel(number, mark);
         } catch (NumberFormatException e) {
             throw new InvalidCommandException("eg. mark 1\neg. unmark 1");
         } catch (IndexOutOfBoundsException e) {
             throw new InvalidCommandException("Invalid task number.");
+        }
+    }
+
+    /**
+     * Creates the corresponding <code>Task</code> based on the type specified.
+     *
+     * @param task The task description.
+     * @param type The task type.
+     * @return The <code>Task</code> created.
+     * @throws InvalidCommandException If task description is in wrong format.
+     */
+    private Task createTask(String task, String type) throws InvalidCommandException {
+        switch (TaskType.valueOf(type.toUpperCase())) {
+        case TODO -> {
+            return new Todo(task);
+        }
+        case DEADLINE -> {
+            try {
+                String[] data = task.split("/by");
+                return new Deadline(data[0].trim(), parseDateTime(data[1].trim()));
+            } catch (IndexOutOfBoundsException e) {
+                throw new InvalidCommandException("eg. deadline return book /by 23-08-2025 1800");
+            }
+        }
+        case EVENT -> {
+            try {
+                String[] data = task.split("/from");
+                String[] timing = data[1].trim().split("/to");
+                return new Event(data[0].trim(), parseDateTime(timing[0].trim()), parseDateTime(timing[1].trim()));
+            } catch (IndexOutOfBoundsException e) {
+                throw new InvalidCommandException("eg. event project meeting "
+                        + "/from 23-08-2025 1400 /to 23-08-2025 1600");
+            }
+        }
+        default -> throw new InvalidCommandException("No such task.");
         }
     }
 
@@ -125,30 +200,7 @@ public class TaskList {
      */
     public Task addTask(String task, String type) throws InvalidCommandException {
         try {
-            Task t;
-            switch (TaskType.valueOf(type.toUpperCase())) {
-            case TODO -> t = new Todo(task);
-            case DEADLINE -> {
-                try {
-                    String[] data = task.split("/by");
-                    t = new Deadline(data[0].trim(), parseDateTime(data[1].trim()));
-                } catch (IndexOutOfBoundsException e) {
-                    throw new InvalidCommandException("eg. deadline return book /by 23-08-2025 1800");
-                }
-            }
-            case EVENT -> {
-                try {
-                    String[] data = task.split("/from");
-                    String[] timing = data[1].trim().split("/to");
-                    t = new Event(data[0].trim(), parseDateTime(timing[0].trim()), parseDateTime(timing[1].trim()));
-                } catch (IndexOutOfBoundsException e) {
-                    throw new InvalidCommandException("eg. event project meeting "
-                            + "/from 23-08-2025 1400 /to 23-08-2025 1600");
-                }
-            }
-            default -> throw new InvalidCommandException("No such task.");
-            }
-
+            Task t = createTask(task, type);
             taskList.add(t);
             return t;
         } catch (IllegalArgumentException e) {

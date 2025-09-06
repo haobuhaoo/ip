@@ -9,6 +9,11 @@ import java.time.format.DateTimeFormatter;
  */
 public class Deadline extends Task {
     /**
+     * The format of the dateTime that the chatbot outputs.
+     */
+    private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma");
+
+    /**
      * The due date of the task.
      */
     private final LocalDateTime dueDate;
@@ -45,7 +50,7 @@ public class Deadline extends Task {
      * @return <li>The format is "MMM dd yyyy hh:mma".</li><li>Eg. "Aug 26 2025 12:32am".</li>
      */
     private String parseDateTime(LocalDateTime dateTime) {
-        return dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"));
+        return dateTime.format(OUTPUT_DATETIME_FORMAT);
     }
 
     /**

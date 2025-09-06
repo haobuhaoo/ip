@@ -34,6 +34,73 @@ public class Storage {
     }
 
     /**
+     * Creates the file to store the taskList.
+     */
+    private void createFile(File file) {
+        try {
+            if (!file.createNewFile()) {
+                System.out.println("File could not be created.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating new file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Creates the parent directory for the file that stores the taskList.
+     */
+    private void createFileDirectory(File file) {
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            if (!parent.mkdirs()) {
+                System.out.println("Error creating parent directory.");
+            }
+        }
+    }
+
+    /**
+     * Creates the specific <code>Task</code> based on what is written in the file.
+     *
+     * @param line The line that is read by the scanner in the file.
+     * @return <code>Task</code> object.
+     * @throws DateTimeParseException If the format for dateTime is written wrongly.
+     */
+    private Task createTask(String line) throws DateTimeParseException {
+        String[] data = line.split("\\|");
+        boolean completed = data[1].trim().equals("1");
+
+        switch (TaskList.TaskType.valueOf(data[0].trim().toUpperCase())) {
+        case TODO:
+            return new Todo(data[2].trim(), completed);
+        case DEADLINE:
+            return new Deadline(data[2].trim(), completed, LocalDateTime.parse(data[3].trim()));
+        case EVENT:
+            return new Event(data[2].trim(), completed,
+                    LocalDateTime.parse(data[3].trim()), LocalDateTime.parse(data[4].trim()));
+        default:
+            throw new RuntimeException("Invalid task format");
+        }
+    }
+
+    /**
+     * Increments the total count of corrupted tasks and prints out the line that is corrupted.
+     *
+     * @return The new total corrupted count.
+     */
+    private int handleCorruptedTask(int corrupted, String line) {
+        corrupted++;
+        System.out.println("Skipping corrupted task: " + line);
+        return corrupted;
+    }
+
+    /**
+     * Prints the total number of corrupted tasks in the file.
+     */
+    private void printTotalCorruptedTasks(int corrupted) {
+        System.out.println("Total Corrupted Tasks: " + corrupted + "\n");
+    }
+
+    /**
      * Loads the file specified in <code>filePath</code> by reading every line of the file and converting
      * it into a <code>Task</code>, which then adds it into an <code>TaskList</code> and is returned.
      * <p>
@@ -50,20 +117,8 @@ public class Storage {
         File file = new File(filePath);
 
         if (!file.exists()) {
-            File parent = file.getParentFile();
-            if (parent != null && !parent.exists()) {
-                if (!parent.mkdirs()) {
-                    System.out.println("Error creating parent directory.");
-                }
-            }
-
-            try {
-                if (!file.createNewFile()) {
-                    System.out.println("File could not be created.");
-                }
-            } catch (IOException e) {
-                System.out.println("Error creating new file: " + e.getMessage());
-            }
+            createFileDirectory(file);
+            createFile(file);
             return new TaskList(taskList);
         }
 
@@ -75,30 +130,18 @@ public class Storage {
                     continue;
                 }
 
-                String[] data = line.split("\\|");
-                boolean completed = data[1].trim().equals("1");
-
                 try {
-                    Task t = null;
-                    switch (TaskList.TaskType.valueOf(data[0].trim().toUpperCase())) {
-                    case TODO -> t = new Todo(data[2].trim(), completed);
-                    case DEADLINE -> t = new Deadline(data[2].trim(), completed,
-                            LocalDateTime.parse(data[3].trim()));
-                    case EVENT -> t = new Event(data[2].trim(), completed,
-                            LocalDateTime.parse(data[3].trim()), LocalDateTime.parse(data[4].trim()));
-                    default -> { } //do nothing
-                    }
+                    Task t = createTask(line);
                     taskList.add(t);
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Invalid task format: " + e);
                 } catch (DateTimeParseException e) {
-                    corrupted++;
-                    System.out.println("Skipping corrupted task: " + line);
+                    corrupted = handleCorruptedTask(corrupted, line);
                 }
             }
 
             if (corrupted > 0) {
-                System.out.println("Total Corrupted Tasks: " + corrupted + "\n");
+                printTotalCorruptedTasks(corrupted);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error reading file from hard disk: " + e.getMessage());
