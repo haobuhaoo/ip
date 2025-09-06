@@ -87,6 +87,8 @@ public class TaskList {
 
         try {
             Task t = taskList.get(Integer.parseInt(number) - 1);
+            assert t != null : "task should not be null";
+
             if (mark) {
                 if (t.isCompleted()) {
                     throw new InvalidCommandException("Task \"" + t.getName() + "\" is already marked as done");

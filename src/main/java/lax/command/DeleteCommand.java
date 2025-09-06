@@ -37,6 +37,8 @@ public class DeleteCommand extends Command {
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) throws InvalidCommandException {
         Task t = taskList.deleteTask(taskNumber);
+        assert t != null : "task should not be null";
+
         storage.saveTask(taskList);
         return ui.showSuccessMessage(print(t, taskList));
     }
