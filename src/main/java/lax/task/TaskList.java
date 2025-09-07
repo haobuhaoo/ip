@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -17,12 +18,14 @@ public class TaskList {
     /**
      * The format of the dateTime that user inputs.
      */
-    private static final DateTimeFormatter INPUT_DATETIME_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
+    private static final DateTimeFormatter INPUT_DATETIME_FORMAT =
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm", Locale.ENGLISH);
 
     /**
      * The format of the dateTime that the chatbot outputs.
      */
-    private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma");
+    private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma", Locale.ENGLISH);
 
     /**
      * The arraylist to store the list of task.
@@ -66,7 +69,9 @@ public class TaskList {
     private String getDateString(LocalDateTime dateTime) {
         return dateTime == null
                 ? ""
-                : " on " + dateTime.format(OUTPUT_DATETIME_FORMAT);
+                : " on " + dateTime.format(OUTPUT_DATETIME_FORMAT)
+                    .replace("AM", "am")
+                    .replace("PM", "pm");
     }
 
     /**

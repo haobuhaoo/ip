@@ -2,6 +2,7 @@ package lax.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Represents a Deadline task with a <code>String</code> name, <code>boolean</code> completed and
@@ -11,7 +12,8 @@ public class Deadline extends Task {
     /**
      * The format of the dateTime that the chatbot outputs.
      */
-    private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma");
+    private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma", Locale.ENGLISH);
 
     /**
      * The due date of the task.
@@ -50,7 +52,9 @@ public class Deadline extends Task {
      * @return <li>The format is "MMM dd yyyy hh:mma".</li><li>Eg. "Aug 26 2025 12:32am".</li>
      */
     private String parseDateTime(LocalDateTime dateTime) {
-        return dateTime.format(OUTPUT_DATETIME_FORMAT);
+        return dateTime.format(OUTPUT_DATETIME_FORMAT)
+                .replace("AM", "am")
+                .replace("PM", "pm");
     }
 
     /**
