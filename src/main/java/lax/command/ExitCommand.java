@@ -1,7 +1,7 @@
 package lax.command;
 
-import lax.Storage;
-import lax.task.TaskList;
+import lax.catalogue.Catalogue;
+import lax.storage.Storage;
 import lax.ui.Ui;
 
 /**
@@ -10,14 +10,10 @@ import lax.ui.Ui;
 public class ExitCommand extends Command {
     /**
      * {@inheritDoc}
-     * It sets the exit status of the command to <code>true</code> and closes the chatbot.
-     *
-     * @param taskList The tasklist to modify.
-     * @param ui       The ui for displaying messages to the user.
-     * @param storage  The database for saving the tasklist.
+     * It displays the exit message to the user.
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) {
+    public String execute(Catalogue catalogue, Ui ui, Storage storage) {
         return ui.showExit();
     }
 }

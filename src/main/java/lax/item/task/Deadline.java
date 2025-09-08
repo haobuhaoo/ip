@@ -1,20 +1,12 @@
-package lax.task;
+package lax.item.task;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /**
  * Represents a Deadline task with a <code>String</code> name, <code>boolean</code> completed and
  * <code>LocalDateTime</code> dueDate.
  */
 public class Deadline extends Task {
-    /**
-     * The format of the dateTime that the chatbot outputs.
-     */
-    private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT =
-            DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma", Locale.ENGLISH);
-
     /**
      * The due date of the task.
      */
@@ -37,24 +29,13 @@ public class Deadline extends Task {
      * @param c The completion status of the task.
      * @param d The due date of the task.
      */
-    public Deadline(String n, Boolean c, LocalDateTime d) {
+    public Deadline(String n, boolean c, LocalDateTime d) {
         super(n, c);
         dueDate = d;
     }
 
     public LocalDateTime getDueDate() {
         return dueDate;
-    }
-
-    /**
-     * Converts the dateTime into a <code>String</code> suitable for displaying.
-     *
-     * @return <li>The format is "MMM dd yyyy hh:mma".</li><li>Eg. "Aug 26 2025 12:32am".</li>
-     */
-    private String parseDateTime(LocalDateTime dateTime) {
-        return dateTime.format(OUTPUT_DATETIME_FORMAT)
-                .replace("AM", "am")
-                .replace("PM", "pm");
     }
 
     /**
@@ -76,6 +57,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + parseDateTime(dueDate) + ")";
+        return "[D]" + super.toString() + " (by: " + super.parseDateTime(dueDate) + ")";
     }
 }

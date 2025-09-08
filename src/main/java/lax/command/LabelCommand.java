@@ -1,9 +1,9 @@
 package lax.command;
 
-import lax.Storage;
+import lax.catalogue.Catalogue;
 import lax.exception.InvalidCommandException;
-import lax.task.Task;
-import lax.task.TaskList;
+import lax.item.Item;
+import lax.storage.Storage;
 import lax.ui.Ui;
 
 /**
@@ -33,32 +33,28 @@ public class LabelCommand extends Command {
 
     /**
      * {@inheritDoc}
-     * It labels the <code>Task</code> specified by the task number and saves the tasklist into the
-     * database. After a successful execution, a success message is displayed to the user.
+     * It labels the <code>Task</code> specified by the task number and saves the taskList into the database.
+     * After a successful execution, a success message is displayed to the user.
+     * <p>
+     * Only <code>Task</code> can be labelled.
      *
-     * @param taskList The tasklist to modify.
-     * @param ui       The ui for displaying messages to the user.
-     * @param storage  The database for saving the tasklist.
-     * @throws InvalidCommandException If the user inputs an invalid command.
+     * @throws InvalidCommandException If the user inputs an invalid command or if a note is being labelled.
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) throws InvalidCommandException {
-        Task t = taskList.labelTask(taskNumber, mark);
-        assert t != null : "task should not be null";
+    public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException {
+        Item item = catalogue.labelItem(taskNumber, mark);
+        assert item != null : "item should not be null";
 
-        storage.saveTask(taskList);
-        return ui.showSuccessMessage(print(t));
+        storage.saveTask(catalogue);
+        return ui.showSuccessMessage(print(item));
     }
 
     /**
-     * Prints the success message after an execution.
-     *
-     * @param t The <code>Task</code> labeled.
-     * @return A <code>String</code> message.
+     * Prints the success message after a label execution.
      */
-    public String print(Task t) {
+    public String print(Item item) {
         return (mark
-                ? "Nice! I've marked this task as done:\n  "
-                : "OK, I've marked this task as not done yet:\n  ") + t;
+                ? "Nice! I've marked this item as done:\n  "
+                : "OK, I've marked this item as not done yet:\n  ") + item;
     }
 }

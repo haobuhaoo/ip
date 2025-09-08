@@ -1,7 +1,7 @@
 package lax.command;
 
-import lax.Storage;
-import lax.task.TaskList;
+import lax.catalogue.Catalogue;
+import lax.storage.Storage;
 import lax.ui.Ui;
 
 /**
@@ -10,14 +10,10 @@ import lax.ui.Ui;
 public class ListCommand extends Command {
     /**
      * {@inheritDoc}
-     * It displays the full tasklist to the user.
-     *
-     * @param taskList The tasklist to modify.
-     * @param ui       The ui for displaying messages to the user.
-     * @param storage  The database for saving the tasklist.
+     * It displays the full <code>Catalogue</code> to the user.
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) {
-        return ui.showList(taskList);
+    public String execute(Catalogue catalogue, Ui ui, Storage storage) {
+        return ui.showList(catalogue.showList());
     }
 }

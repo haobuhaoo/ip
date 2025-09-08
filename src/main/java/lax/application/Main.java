@@ -14,9 +14,19 @@ import lax.Lax;
  */
 public class Main extends Application {
     /**
+     * The file path to store the tasks.
+     */
+    private final String taskPath = "./data/task.txt";
+
+    /**
+     * The file path to store the notes.
+     */
+    private final String notesPath = "./data/notes.txt";
+
+    /**
      * An instance of the chatbot.
      */
-    private final Lax lax = new Lax("./data/data.txt");
+    private final Lax lax = new Lax(taskPath, notesPath);
 
     /**
      * Starts the GUI of the application.

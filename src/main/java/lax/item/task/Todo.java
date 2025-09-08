@@ -1,4 +1,4 @@
-package lax.task;
+package lax.item.task;
 
 /**
  * Represents a Todo task with a <code>String</code> name and <code>boolean</code> completed.
@@ -19,7 +19,7 @@ public class Todo extends Task {
      * @param n The name of the task.
      * @param c The completion status of the task.
      */
-    public Todo(String n, Boolean c) {
+    public Todo(String n, boolean c) {
         super(n, c);
     }
 

@@ -1,4 +1,4 @@
-package lax.task;
+package lax.catalogue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,6 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import lax.exception.InvalidCommandException;
+import lax.item.task.Deadline;
+import lax.item.task.Event;
+import lax.item.task.Task;
+import lax.item.task.Todo;
 
 public class TaskListTest {
     private ArrayList<Task> arrayList;
@@ -31,11 +35,11 @@ public class TaskListTest {
 
     @Test
     public void showList_emptyList_success() {
-        assertEquals("There is no task in your list.",
-                new TaskList(arrayList).showList(null));
+        assertEquals("There is no item in your list.",
+                new TaskList(arrayList).showList());
 
-        assertEquals("There is no task in your list on Aug 25 2025 12:00am.",
-                new TaskList(arrayList).showList(LocalDateTime.parse("2025-08-25T00:00")));
+        assertEquals("There is no item in your list on Aug 25 2025 12:00am.",
+                new TaskList(arrayList).showList(LocalDateTime.parse("2025-08-25T00:00"), arrayList));
     }
 
     @Test
@@ -43,27 +47,26 @@ public class TaskListTest {
         arrayList.add(deadline);
         TaskList t = new TaskList(arrayList);
 
-        assertEquals("Here are the tasks in your list:\n1. [D][ ] return book (by: Aug 25 2025 01:50pm)",
-                t.showList(null));
+        assertEquals("Here are the items in your list:\n1. [D][ ] return book (by: Aug 25 2025 01:50pm)",
+                t.showList());
 
-        assertEquals("Here are the tasks in your list on Aug 25 2025 12:00am:\n"
+        assertEquals("Here are the items in your list on Aug 25 2025 12:00am:\n"
                         + "1. [D][ ] return book (by: Aug 25 2025 01:50pm)",
-                t.showList(LocalDateTime.parse("2025-08-25T00:00")));
+                t.showList(LocalDateTime.parse("2025-08-25T00:00"), arrayList));
     }
 
     @Test
-    public void labelTask_correctLabel_success() throws InvalidCommandException {
+    public void labelItem_correctLabel_success() throws InvalidCommandException {
         arrayList.add(deadline);
         TaskList t = new TaskList(arrayList);
-
-        assertTrue(t.labelTask("1", true).isCompleted());
-        assertFalse(t.labelTask("1", false).isCompleted());
+        assertTrue(t.labelItem("1", true).isCompleted());
+        assertFalse(t.labelItem("1", false).isCompleted());
     }
 
     @Test
-    public void labelTask_emptyList_exceptionThrown() {
+    public void labelItem_emptyList_exceptionThrown() {
         try {
-            assertTrue(new TaskList(arrayList).labelTask("1", true).isCompleted());
+            assertTrue(new TaskList(arrayList).labelItem("1", true).isCompleted());
             fail();
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\nNo task to be marked", e.getMessage());
@@ -71,21 +74,21 @@ public class TaskListTest {
     }
 
     @Test
-    public void labelTask_invalidCommand_exceptionThrown() {
+    public void labelItem_invalidCommand_exceptionThrown() {
         arrayList.add(deadline);
         TaskList t = new TaskList(arrayList);
 
         // invalid task number
         try {
-            assertTrue(t.labelTask("x", true).isCompleted());
+            assertTrue(t.labelItem("x", true).isCompleted());
             fail();
         } catch (InvalidCommandException e) {
-            assertEquals("Invalid command.\neg. mark 1\neg. unmark 1", e.getMessage());
+            assertEquals("Invalid command.\neg. task mark 1\neg. task unmark 1", e.getMessage());
         }
 
         // task number greater than list size
         try {
-            assertTrue(t.labelTask("3", true).isCompleted());
+            assertTrue(t.labelItem("3", true).isCompleted());
             fail();
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\nInvalid task number.", e.getMessage());
@@ -93,7 +96,7 @@ public class TaskListTest {
 
         // task already unmarked
         try {
-            assertTrue(t.labelTask("1", false).isCompleted());
+            assertTrue(t.labelItem("1", false).isCompleted());
             fail();
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\nTask \"return book\" is already marked as not done",
@@ -101,34 +104,33 @@ public class TaskListTest {
         }
     }
 
-
     @Test
-    public void addTask_taskAdded_success() throws InvalidCommandException {
+    public void addItem_taskAdded_success() throws InvalidCommandException {
         TaskList t = new TaskList(arrayList);
-        t.addTask("read book", "todo");
+        t.addItem("read book", "todo");
 
-        assertEquals("Here are the tasks in your list:\n1. [T][ ] read book",
-                t.showList(null));
+        assertEquals("Here are the items in your list:\n1. [T][ ] read book",
+                t.showList());
     }
 
     @Test
-    public void addTask_invalidTask_exceptionThrown() {
+    public void addItem_invalidTask_exceptionThrown() {
         try {
             TaskList t = new TaskList(arrayList);
-            t.addTask("project meeting", "event");
+            t.addItem("project meeting", "event");
             fail();
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\n"
-                            + "eg. event project meeting /from 23-08-2025 1400 /to 23-08-2025 1600",
+                            + "eg. task event project meeting /from 23-08-2025 1400 /to 23-08-2025 1600",
                     e.getMessage());
         }
     }
 
     @Test
-    public void addTask_invalidDateTime_exceptionThrown() throws InvalidCommandException {
+    public void addItem_invalidDateTime_exceptionThrown() throws InvalidCommandException {
         try {
             TaskList t = new TaskList(arrayList);
-            t.addTask("project meeting /from 23/08/2025 1400 /to 2025-08-23 16:00", "event");
+            t.addItem("project meeting /from 23/08/2025 1400 /to 2025-08-23 16:00", "event");
             fail();
         } catch (DateTimeParseException e) {
             assertEquals("Text '23/08/2025 1400' could not be parsed at index 2",
@@ -137,18 +139,18 @@ public class TaskListTest {
     }
 
     @Test
-    public void deleteTask_taskDeleted_success() throws InvalidCommandException {
+    public void deleteItem_taskDeleted_success() throws InvalidCommandException {
         arrayList.add(todo);
         TaskList t = new TaskList(arrayList);
-        t.deleteTask("1");
+        t.deleteItem("1");
 
-        assertEquals("There is no task in your list.", t.showList(null));
+        assertEquals("There is no item in your list.", t.showList());
     }
 
     @Test
-    public void deleteTask_emptyList_success() {
+    public void deleteItem_emptyList_success() {
         try {
-            assertEquals(todo, new TaskList(arrayList).deleteTask("1"));
+            new TaskList(arrayList).deleteItem("1");
             fail();
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\nNo task to delete.", e.getMessage());
@@ -156,21 +158,21 @@ public class TaskListTest {
     }
 
     @Test
-    public void deleteTask_invalidCommand_exceptionThrown() {
+    public void deleteItem_invalidCommand_exceptionThrown() {
         arrayList.add(todo);
         TaskList t = new TaskList(arrayList);
 
         // invalid task number
         try {
-            assertEquals(todo, t.deleteTask("x"));
+            assertEquals(todo, t.deleteItem("x"));
             fail();
         } catch (InvalidCommandException e) {
-            assertEquals("Invalid command.\neg. delete 1", e.getMessage());
+            assertEquals("Invalid command.\neg. task delete 1", e.getMessage());
         }
 
         // task number greater than list size
         try {
-            assertEquals(todo, t.deleteTask("3"));
+            assertEquals(todo, t.deleteItem("3"));
             fail();
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\nInvalid task number.", e.getMessage());
@@ -178,36 +180,44 @@ public class TaskListTest {
     }
 
     @Test
-    public void findTask_taskFound_success() {
+    public void findItems_taskFound_success() {
         arrayList.add(todo);
         arrayList.add(deadline);
         arrayList.add(event);
 
-        // task in tasklist
+        // task in taskList
         assertEquals("""
-                        Here are the tasks in your list:
+                        Here are the items in your list:
                         1. [T][ ] read book
                         2. [D][ ] return book (by: Aug 25 2025 01:50pm)""",
-                new TaskList(arrayList).findTask("book"));
+                new TaskList(arrayList).findItems("book"));
 
-        // task not in tasklist
-        assertEquals("There is no task in your list.",
-                new TaskList(arrayList).findTask("task not in list"));
+        // task not in taskList
+        assertEquals("There is no item in your list.",
+                new TaskList(arrayList).findItems("task not in list"));
     }
 
     @Test
-    public void filterTask_taskFiltered_success() {
+    public void filterItems_taskFiltered_success() throws InvalidCommandException {
         arrayList.add(todo);
         arrayList.add(deadline);
         arrayList.add(event);
 
-        // task in tasklist
-        assertEquals("Here are the tasks in your list on Aug 23 2025 06:00pm:\n"
+        // task in taskList
+        assertEquals("Here are the items in your list on Aug 23 2025 06:00pm:\n"
                         + "1. [D][ ] return book (by: Aug 25 2025 01:50pm)",
-                new TaskList(arrayList).filterTask("23-08-2025 1800"));
+                new TaskList(arrayList).filterItems("23-08-2025 1800"));
 
-        // task not in tasklist
-        assertEquals("There is no task in your list on Jan 01 2050 12:00am.",
-                new TaskList(arrayList).filterTask("01-01-2050 0000"));
+        // task not in taskList
+        assertEquals("There is no item in your list on Jan 01 2050 12:00am.",
+                new TaskList(arrayList).filterItems("01-01-2050 0000"));
+    }
+
+    @Test
+    public void serialize_success() {
+        arrayList.add(deadline);
+        TaskList t = new TaskList(arrayList);
+
+        assertEquals("deadline | 0 | return book | 2025-08-25T13:50", t.serialize().get(0));
     }
 }

@@ -1,7 +1,8 @@
 package lax.command;
 
-import lax.Storage;
-import lax.task.TaskList;
+import lax.catalogue.Catalogue;
+import lax.exception.InvalidCommandException;
+import lax.storage.Storage;
 import lax.ui.Ui;
 
 /**
@@ -9,7 +10,7 @@ import lax.ui.Ui;
  */
 public class FilterCommand extends Command {
     /**
-     * The dateTime used to filter tasklist by.
+     * The dateTime used to filter by.
      */
     private final String dateTime;
 
@@ -24,15 +25,11 @@ public class FilterCommand extends Command {
 
     /**
      * {@inheritDoc}
-     * It filters the tasklist for all <code>Task</code> happening on the specified dateTime and displays
-     * the filtered tasklist to the user.
-     *
-     * @param taskList The tasklist to modify.
-     * @param ui       The ui for displaying messages to the user.
-     * @param storage  The database for saving the tasklist.
+     * It filters the <code>Catalogue</code> for all <code>Item</code> happening on the specified dateTime
+     * and displays it to the user.
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) {
-        return ui.showList(taskList.filterTask(dateTime));
+    public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException {
+        return ui.showList(catalogue.filterItems(dateTime));
     }
 }

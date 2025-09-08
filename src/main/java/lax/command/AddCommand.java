@@ -1,9 +1,9 @@
 package lax.command;
 
-import lax.Storage;
+import lax.catalogue.Catalogue;
 import lax.exception.InvalidCommandException;
-import lax.task.Task;
-import lax.task.TaskList;
+import lax.item.Item;
+import lax.storage.Storage;
 import lax.ui.Ui;
 
 /**
@@ -11,55 +11,49 @@ import lax.ui.Ui;
  */
 public class AddCommand extends Command {
     /**
-     * The task description.
+     * The description of the item.
      */
-    private final String task;
+    private final String description;
 
     /**
-     * The type of task. It should only be of type <code>TODO</code>, <code>DEADLINE</code>,
-     * <code>EVENT</code>.
+     * The type of item. It should only be of type <code>TODO</code>, <code>DEADLINE</code>,
+     * <code>EVENT</code> for <code>Task</code> objects and <code>NOTE</code> for <code>Note</code>
+     * objects.
      */
     private final String type;
 
     /**
-     * Constructs the add command with a task description and task type.
+     * Constructs the add command with an item description and type.
      *
-     * @param td The task description.
-     * @param t  The type of task.
+     * @param d The item description.
+     * @param t The type of item.
      */
-    public AddCommand(String td, String t) {
-        task = td;
+    public AddCommand(String d, String t) {
+        description = d;
         type = t;
     }
 
     /**
      * {@inheritDoc}
-     * It adds the new <code>Task</code> into the tasklist and saves the tasklist into the database. After
-     * successful execution, a success message is displayed to the user.
+     * It adds the new <code>Item</code> into the <code>Catalogue</code> and saves the <code>Catalogue</code>
+     * into the database. After successful execution, a success message is displayed to the user.
      *
-     * @param taskList The tasklist to modify.
-     * @param ui       The ui for displaying messages to the user.
-     * @param storage  The database for saving the tasklist.
      * @throws InvalidCommandException If the user inputs an invalid command.
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) throws InvalidCommandException {
-        Task t = taskList.addTask(task, type);
-        assert t != null : "task should not be null";
+    public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException {
+        Item item = catalogue.addItem(description, type);
+        assert item != null : "item should not be null";
 
-        storage.saveTask(taskList);
-        return ui.showSuccessMessage(print(t, taskList));
+        storage.saveTask(catalogue);
+        return ui.showSuccessMessage(print(item, catalogue));
     }
 
     /**
-     * Prints the success message after an execution.
-     *
-     * @param t        The new <code>Task</code> added.
-     * @param taskList The tasklist.
-     * @return A <code>String</code> message.
+     * Prints the success message after an add execution.
      */
-    public String print(Task t, TaskList taskList) {
-        return "Got it. I've added this task to the list:\n  " + t
-                + "\nNow you have " + taskList.size() + " tasks in the list.";
+    public String print(Item item, Catalogue catalogue) {
+        return "Got it. I've added this item to the list:\n  " + item
+                + "\nNow you have " + catalogue.size() + " items in the list.";
     }
 }

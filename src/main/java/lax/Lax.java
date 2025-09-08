@@ -2,16 +2,19 @@ package lax;
 
 import java.time.format.DateTimeParseException;
 
+import lax.catalogue.NoteList;
+import lax.catalogue.TaskList;
 import lax.command.Command;
 import lax.command.Parser;
 import lax.exception.InvalidCommandException;
-import lax.task.TaskList;
+import lax.storage.NotesStorage;
+import lax.storage.TaskStorage;
 import lax.ui.Ui;
 
 /**
- * Represents the chatbot with an <code>Ui</code>, <code>Storage</code> and <code>TaskList</code>.
- * <p>
- * It allows <code>Task</code> to be stored and managed in a database file specified.
+ * Represents the chatbot with an <code>Ui</code>, <code>TaskStorage</code>, <code>NotesStorage</code>,
+ * <code>TaskList</code>, <code>NotesList</code> and <code>CommandType</code>. It allows <code>Items</code>
+ * to be stored and managed in a database files specified.
  */
 public class Lax {
     /**
@@ -20,14 +23,24 @@ public class Lax {
     private static Ui ui;
 
     /**
-     * Database of the chatbot.
+     * Task database of the chatbot.
      */
-    private static Storage storage;
+    private static TaskStorage taskStorage;
 
     /**
-     * List of Tasks of the user.
+     * Notes database of the chatbot.
+     */
+    private static NotesStorage notesStorage;
+
+    /**
+     * List of tasks of the user.
      */
     private static TaskList taskList;
+
+    /**
+     * List of notes of the user.
+     */
+    private static NoteList notesList;
 
     /**
      * Type of command keyed in by the user.
@@ -35,15 +48,22 @@ public class Lax {
     private String commandType;
 
     /**
-     * Constructs the chatbot with a String <code>filePath</code> to store the list of tasks to or retrieve
-     * existing tasks from. It then loads the file into <code>taskList</code>.
+     * Constructs the chatbot with strings <code>taskPath</code> and <code>notesPath</code> to store
+     * the list of items.
      */
-    public Lax(String filePath) {
+    public Lax(String taskPath, String notesPath) {
         ui = new Ui();
-        storage = new Storage(filePath);
-        taskList = storage.loadTask();
+        taskStorage = new TaskStorage(taskPath);
+        notesStorage = new NotesStorage(notesPath);
+        taskList = taskStorage.loadTask();
+        notesList = notesStorage.loadNotes();
 
         assert taskList != null : "taskList should not be null";
+        assert notesList != null : "notesList should not be null";
+    }
+
+    public String getCommandType() {
+        return commandType;
     }
 
     /**
@@ -56,7 +76,11 @@ public class Lax {
             commandType = command.getClass().getSimpleName();
             assert !commandType.isEmpty() : "command type should not be empty";
 
-            return command.execute(taskList, ui, storage);
+            if (command.getNoteCommand()) {
+                return command.execute(notesList, ui, notesStorage);
+            } else {
+                return command.execute(taskList, ui, taskStorage);
+            }
         } catch (InvalidCommandException e) {
             commandType = invalidCmd;
             return ui.showError(e.getMessage());
@@ -64,9 +88,5 @@ public class Lax {
             commandType = invalidCmd;
             return ui.invalidDateTime();
         }
-    }
-
-    public String getCommandType() {
-        return commandType;
     }
 }

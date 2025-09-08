@@ -1,20 +1,12 @@
-package lax.task;
+package lax.item.task;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /**
  * Represents an Event task with a <code>String</code> name, <code>boolean</code> completed,
  * <code>LocalDateTime</code> startDate and <code>LocalDateTime</code> endDate.
  */
 public class Event extends Task {
-    /**
-     * The format of the dateTime that the chatbot outputs.
-     */
-    private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT =
-            DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma", Locale.ENGLISH);
-
     /**
      * The start date of the task.
      */
@@ -44,7 +36,7 @@ public class Event extends Task {
      * @param s The start date of the task.
      * @param e The end date of the task.
      */
-    public Event(String n, Boolean c, LocalDateTime s, LocalDateTime e) {
+    public Event(String n, boolean c, LocalDateTime s, LocalDateTime e) {
         super(n, c);
         startDate = s;
         endDate = e;
@@ -56,17 +48,6 @@ public class Event extends Task {
 
     public LocalDateTime getEndDate() {
         return endDate;
-    }
-
-    /**
-     * Converts the dateTime into a <code>String</code> suitable for displaying.
-     *
-     * @return <li>The format is "MMM dd yyyy hh:mma".</li><li>Eg. "Aug 26 2025 12:32am".</li>
-     */
-    private String parseDateTime(LocalDateTime dateTime) {
-        return dateTime.format(OUTPUT_DATETIME_FORMAT)
-                .replace("AM", "am")
-                .replace("PM", "pm");
     }
 
     /**
@@ -89,6 +70,6 @@ public class Event extends Task {
     @Override
     public String toString() {
         return "[E]" + super.toString()
-                + " (from: " + parseDateTime(startDate) + " to: " + parseDateTime(endDate) + ")";
+                + " (from: " + super.parseDateTime(startDate) + " to: " + super.parseDateTime(endDate) + ")";
     }
 }

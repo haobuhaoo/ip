@@ -1,7 +1,5 @@
 package lax.ui;
 
-import lax.task.TaskList;
-
 /**
  * Represents the User Interface of the chatbot. It displays out messages to the user.
  */
@@ -17,19 +15,10 @@ public class Ui {
     }
 
     /**
-     * Displays the list of tasks that the user has stored in the database.
+     * Displays the list of filtered items.
      */
-    public String showList(TaskList taskList) {
-        return taskList.showList(null);
-    }
-
-    /**
-     * Displays the list of filtered tasks on a specific date.
-     * <p>
-     * This is an overloaded method.
-     */
-    public String showList(String taskList) {
-        return taskList;
+    public String showList(String filteredList) {
+        return filteredList;
     }
 
     /**
@@ -45,6 +34,12 @@ public class Ui {
     public String showHelp() {
         return """
                 List of Commands:
+                >>> general command:
+                - help
+                - bye
+
+                >>> task command:
+                (add a prefix "task" in front)
                 - list
                 - mark "task number"
                 - unmark "task number"
@@ -54,8 +49,14 @@ public class Ui {
                 - delete "task number"
                 - find "task description"
                 - filter "DateTime"
-                - help
-                - bye""";
+
+                >>> note command:
+                (add a prefix "note" in front)
+                - list
+                - add "note"
+                - delete "note number"
+                - find "note description"
+                - filter "DateTime\"""";
     }
 
     /**
