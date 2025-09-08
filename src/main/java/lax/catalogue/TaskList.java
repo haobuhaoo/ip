@@ -218,7 +218,7 @@ public class TaskList implements Catalogue {
      * @return A <code>String</code> representation of the filtered taskList.
      */
     @Override
-    public String filterItems(String dt) throws InvalidCommandException {
+    public String filterItems(String dt) {
         LocalDateTime dateTime = Catalogue.super.parseDateTime(dt);
         ArrayList<Task> newTask = taskList.stream()
                 .filter(t -> happeningNow(t, dateTime))
