@@ -198,7 +198,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void filterItems_taskFiltered_success() throws InvalidCommandException {
+    public void filterItems_taskFiltered_success() {
         arrayList.add(todo);
         arrayList.add(deadline);
         arrayList.add(event);
