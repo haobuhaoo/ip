@@ -18,12 +18,7 @@ import lax.item.notes.Note;
 
 public class StorageTest {
     @TempDir
-    Path tempTaskDir;
-
-    @TempDir
     Path tempNotesDir;
-
-    private String taskPath;
 
     private String filePath;
 

@@ -33,7 +33,7 @@ public interface Catalogue {
      * @return <li>The format is "yyyy-MM-ddTHH:mm".</li><li>Eg. "2025-08-26T13:24".</li>
      * @throws DateTimeParseException If the dateTime cannot be parsed.
      */
-    default LocalDateTime parseDateTime(String dateTime) throws DateTimeParseException, InvalidCommandException {
+    default LocalDateTime parseDateTime(String dateTime) throws DateTimeParseException {
         return LocalDateTime.parse(dateTime, INPUT_DATETIME_FORMAT);
     }
 
