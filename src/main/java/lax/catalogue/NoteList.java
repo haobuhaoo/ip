@@ -163,7 +163,7 @@ public class NoteList implements Catalogue {
     }
 
     /**
-     * Serialize the current notesList into the correct format.
+     * Serializes the current notesList into the correct format.
      *
      * @return An <code>ArrayList</code> of string representation of notes in the correct format.
      */

@@ -10,6 +10,14 @@ import lax.ui.Ui;
 public class ExitCommand extends Command {
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.BYE;
+    }
+
+    /**
+     * {@inheritDoc}
      * It displays the exit message to the user.
      */
     @Override

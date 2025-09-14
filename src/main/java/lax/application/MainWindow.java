@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lax.Lax;
+import lax.command.Command;
 import lax.ui.Ui;
 
 /**
@@ -82,7 +83,7 @@ public class MainWindow extends AnchorPane {
      */
     public void setLax(Lax l) {
         lax = l;
-        addDialogs(DialogBox.getLaxDialog(new Ui().showWelcome(), laxImage, "Start"));
+        addDialogs(DialogBox.getLaxDialog(new Ui().showWelcome(), laxImage, Command.CommandType.START.name()));
     }
 
     /**

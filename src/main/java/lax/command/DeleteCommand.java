@@ -26,6 +26,14 @@ public class DeleteCommand extends Command {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.DELETE;
+    }
+
+    /**
+     * {@inheritDoc}
      * It deletes the <code>Item</code> from the <code>Catalogue</code> and saves the <code>Catalogue</code>
      * into the database. After successful execution, a success message is displayed to the user.
      *

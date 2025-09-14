@@ -35,6 +35,14 @@ public class AddCommand extends Command {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.ADD;
+    }
+
+    /**
+     * {@inheritDoc}
      * It adds the new <code>Item</code> into the <code>Catalogue</code> and saves the <code>Catalogue</code>
      * into the database. After successful execution, a success message is displayed to the user.
      *

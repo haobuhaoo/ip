@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import lax.command.Command;
 
 /**
  * Represents a dialog box consisting of an <code>ImageView</code> to represent the speaker and a
@@ -68,12 +69,16 @@ public class DialogBox extends HBox {
      * @param commandType The type of command that user inputs.
      */
     private void changeDialogStyle(String commandType) {
-        switch (commandType) {
-        case "AddCommand" -> dialog.getStyleClass().add("add-label");
-        case "DeleteCommand" -> dialog.getStyleClass().add("delete-label");
-        case "LabelCommand" -> dialog.getStyleClass().add("marked-label");
-        case "InvalidCommand" -> dialog.getStyleClass().add("error-label");
-        default -> { } // Do nothing
+        try {
+            switch (Command.CommandType.valueOf(commandType)) {
+            case ADD -> dialog.getStyleClass().add("add-label");
+            case DELETE -> dialog.getStyleClass().add("delete-label");
+            case LABEL -> dialog.getStyleClass().add("marked-label");
+            case INVALID -> dialog.getStyleClass().add("error-label");
+            default -> { } // Do nothing
+            }
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
         }
     }
 

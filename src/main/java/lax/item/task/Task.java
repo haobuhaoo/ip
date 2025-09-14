@@ -24,7 +24,7 @@ public abstract class Task implements Item {
     /**
      * The completion status of the task.
      */
-    private boolean completed;
+    private boolean isCompleted;
 
     /**
      * Constructs the task with a name and its completion status. By default, all new <code>Task</code>
@@ -36,7 +36,7 @@ public abstract class Task implements Item {
      */
     public Task(String n, boolean c) {
         name = n;
-        completed = c;
+        isCompleted = c;
     }
 
     public String getName() {
@@ -44,15 +44,15 @@ public abstract class Task implements Item {
     }
 
     public boolean isCompleted() {
-        return completed;
+        return isCompleted;
     }
 
     public void markTask() {
-        completed = true;
+        isCompleted = true;
     }
 
     public void unmarkTask() {
-        completed = false;
+        isCompleted = false;
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class Task implements Item {
      */
     @Override
     public String toFile() {
-        return (completed ? "1" : "0") + " | " + name;
+        return (isCompleted ? "1" : "0") + " | " + name;
     }
 
     /**
@@ -83,6 +83,6 @@ public abstract class Task implements Item {
      */
     @Override
     public String toString() {
-        return "[" + (completed ? "X" : " ") + "] " + name;
+        return "[" + (isCompleted ? "X" : " ") + "] " + name;
     }
 }

@@ -10,6 +10,14 @@ import lax.ui.Ui;
 public class HelpCommand extends Command {
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.HELP;
+    }
+
+    /**
+     * {@inheritDoc}
      * It displays the full list of commands with its uses to the user.
      */
     @Override

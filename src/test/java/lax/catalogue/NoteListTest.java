@@ -60,9 +60,10 @@ public class NoteListTest {
     @Test
     public void addItem_noteAdded_success() throws InvalidCommandException {
         NoteList n = new NoteList(arrayList);
-        n.addItem("test note", "note");
+        Note note = n.addItem("test note", "note");
+        String dateNow = note.parseDate(LocalDate.now());
 
-        assertEquals("Here are the items in your list:\n1. [Sep 08 2025] test note",
+        assertEquals("Here are the items in your list:\n1. [" + dateNow + "] test note",
                 n.showList());
     }
 
