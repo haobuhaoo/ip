@@ -30,6 +30,6 @@ public class ExitCommandTest {
     public void execute_success() throws InvalidCommandException {
         Command exit = new ExitCommand();
 
-        assertEquals("Bye. Hope to see you again soon!", exit.execute(catalogue, ui, storage));
+        assertEquals("Bye zzzzz...", exit.execute(catalogue, ui, storage));
     }
 }

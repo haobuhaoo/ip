@@ -36,6 +36,7 @@ public class HelpCommandTest {
                         - help
                         - bye
 
+                        zzzzz...
                         >>> task command:
                         (add a prefix "task" in front)
                         - list
@@ -48,6 +49,7 @@ public class HelpCommandTest {
                         - find "task description"
                         - filter "DateTime"
 
+                        zzzzz...
                         >>> note command:
                         (add a prefix "note" in front)
                         - list
