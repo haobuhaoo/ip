@@ -108,7 +108,7 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText().trim().toLowerCase();
         if (input.isEmpty()) {
-            addDialogs(DialogBox.getLaxDialog(new Ui().emptyCmd(), laxImage, "EmptyString"));
+            addDialogs(DialogBox.getLaxDialog(new Ui().emptyCmd(), laxImage, Command.CommandType.EMPTY.name()));
             return;
         }
 
