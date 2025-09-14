@@ -10,6 +10,11 @@ import lax.ui.Ui;
  */
 public abstract class Command {
     /**
+     * Types of commands that can be executed.
+     */
+    public enum CommandType { ADD, DELETE, LABEL, LIST, FIND, FILTER, HELP, BYE, INVALID, START }
+
+    /**
      * Indicates if the command is for the notesList.
      */
     private boolean isNoteCommand = false;
@@ -21,6 +26,11 @@ public abstract class Command {
     public void setNoteCommand(boolean noteCommand) {
         isNoteCommand = noteCommand;
     }
+
+    /**
+     * Returns the type of command.
+     */
+    public abstract CommandType getCommandType();
 
     /**
      * Executes the given command.

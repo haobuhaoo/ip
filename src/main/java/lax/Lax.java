@@ -70,10 +70,10 @@ public class Lax {
      * Generates a response for the user's chat message.
      */
     public String getResponse(String input) {
-        String invalidCmd = "InvalidCommand";
+        String invalidCmd = Command.CommandType.INVALID.name();
         try {
             Command command = Parser.parse(input);
-            commandType = command.getClass().getSimpleName();
+            commandType = command.getCommandType().name();
             assert !commandType.isEmpty() : "command type should not be empty";
 
             if (command.getNoteCommand()) {

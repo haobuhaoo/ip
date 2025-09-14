@@ -10,6 +10,14 @@ import lax.ui.Ui;
 public class ListCommand extends Command {
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.LIST;
+    }
+
+    /**
+     * {@inheritDoc}
      * It displays the full <code>Catalogue</code> to the user.
      */
     @Override

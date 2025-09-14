@@ -24,6 +24,14 @@ public class FindCommand extends Command {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.FIND;
+    }
+
+    /**
+     * {@inheritDoc}
      * It filters the <code>Catalogue</code> for all <code>Item</code> by the keyword in the description
      * and displays it to the user.
      */

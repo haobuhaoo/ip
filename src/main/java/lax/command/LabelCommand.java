@@ -18,7 +18,7 @@ public class LabelCommand extends Command {
     /**
      * The type of label. <code>true</code> if label is mark. <code>false</code> if label is unmark.
      */
-    private final boolean mark;
+    private final boolean isMark;
 
     /**
      * Constructs a label command with the task number and label type.
@@ -28,7 +28,15 @@ public class LabelCommand extends Command {
      */
     public LabelCommand(String c, String t) {
         taskNumber = c;
-        mark = t.equals("mark");
+        isMark = t.equals("mark");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.LABEL;
     }
 
     /**
@@ -42,7 +50,7 @@ public class LabelCommand extends Command {
      */
     @Override
     public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException {
-        Item item = catalogue.labelItem(taskNumber, mark);
+        Item item = catalogue.labelItem(taskNumber, isMark);
         assert item != null : "item should not be null";
 
         storage.saveTask(catalogue);
@@ -53,7 +61,7 @@ public class LabelCommand extends Command {
      * Prints the success message after a label execution.
      */
     public String print(Item item) {
-        return (mark
+        return (isMark
                 ? "Nice! I've marked this item as done:\n  "
                 : "OK, I've marked this item as not done yet:\n  ") + item;
     }

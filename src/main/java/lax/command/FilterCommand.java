@@ -25,6 +25,14 @@ public class FilterCommand extends Command {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.FILTER;
+    }
+
+    /**
+     * {@inheritDoc}
      * It filters the <code>Catalogue</code> for all <code>Item</code> happening on the specified dateTime
      * and displays it to the user.
      */

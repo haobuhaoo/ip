@@ -227,7 +227,7 @@ public class TaskList implements Catalogue {
     }
 
     /**
-     * Serialize the current taskList into the correct format.
+     * Serializes the current taskList into the correct format.
      *
      * @return An <code>ArrayList</code> of string representation of tasks in the correct format.
      */

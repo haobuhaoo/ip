@@ -53,7 +53,7 @@ public class Note implements Item {
      *
      * @return <li>The format is "MMM dd yyyy".</li><li>Eg. "Aug 26 2025".</li>
      */
-    private String parseDate(LocalDate date) {
+    public String parseDate(LocalDate date) {
         return date.format(OUTPUT_DATE_FORMAT);
     }
 
