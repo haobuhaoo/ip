@@ -55,7 +55,7 @@ public interface Catalogue {
      * Parses the catalogue into a string, with the timestamp if dateTime is not null.
      */
     default String createStringList(String dateString, ArrayList<? extends Item> catalogue) {
-        if (catalogue.isEmpty()) {
+        if (catalogue == null || catalogue.isEmpty()) {
             return "There is no item in your list" + dateString + ".";
         }
 

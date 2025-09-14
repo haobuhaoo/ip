@@ -2,6 +2,7 @@ package lax.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,14 +28,14 @@ public class LabelCommandTest {
     }
 
     @Test
-    public void execute_success() throws InvalidCommandException {
+    public void execute_success() throws InvalidCommandException, IOException {
         catalogue.addItem("test task", "todo");
-        catalogue.addItem("testing 1, 2, 3 /by 09-09-2025 0000", "deadline");
+        catalogue.addItem("testing 1, 2, 3", "todo");
         Command label = new LabelCommand("2", "mark");
 
         assertEquals("""
                         Nice! I've marked this item as done:
-                          [D][X] testing 1, 2, 3 (by: Sep 09 2025 12:00am)""",
+                          [T][X] testing 1, 2, 3""",
                 label.execute(catalogue, ui, storage));
     }
 }

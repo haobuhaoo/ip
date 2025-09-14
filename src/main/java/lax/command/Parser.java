@@ -29,6 +29,10 @@ public class Parser {
      *                                 <code>GeneralCommandList</code>, or is incomplete.
      */
     public static Command parse(String command) throws InvalidCommandException {
+        if (command == null || command.isBlank()) {
+            throw new InvalidCommandException("Empty command");
+        }
+
         String[] cmd = command.split(" ", 2);
         assert cmd.length <= 2 : "input should be split into prefix and command details";
 

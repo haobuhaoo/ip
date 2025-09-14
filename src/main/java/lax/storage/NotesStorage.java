@@ -1,5 +1,6 @@
 package lax.storage;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -11,6 +12,14 @@ import lax.item.notes.Note;
  * Represents the database storage for notes.
  */
 public class NotesStorage extends Storage {
+    /**
+     * The maximum number of notes that can be stored.
+     */
+    private static final int MAX_NOTES = 100;
+
+    /**
+     * Constructs a <code>NotesStorage</code> object with the specified file path.
+     */
     public NotesStorage(String filePath) {
         super(filePath);
     }
@@ -23,8 +32,13 @@ public class NotesStorage extends Storage {
      * @throws DateTimeParseException If the format for date is wrong.
      */
     private Note createNote(String line) throws DateTimeParseException {
-        String[] data = line.split("\\|");
+        String[] data = line.trim().split("\\|");
         assert data.length == 2 : "notes in the file should have the date and description";
+
+        if (data[0].trim().isEmpty() || data[1].trim().isEmpty()) {
+            super.handleCorruptedItem(line);
+            return null;
+        }
 
         return new Note(data[1].trim(), LocalDate.parse(data[0].trim()));
     }
@@ -38,9 +52,7 @@ public class NotesStorage extends Storage {
     private Note parseLine(String line) {
         try {
             return createNote(line);
-        } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException(e);
-        } catch (DateTimeParseException e) {
+        } catch (IndexOutOfBoundsException | DateTimeParseException e) {
             super.handleCorruptedItem(line);
             return null;
         }
@@ -51,9 +63,10 @@ public class NotesStorage extends Storage {
      * <code>Note</code>, which then adds it into a notesList and is returned.
      *
      * @return The list of notes stored previously or a new empty list.
+     * @throws IOException If there is an error reading the file.
      */
-    public NoteList loadNotes() {
-        ArrayList<Note> notesList = super.load(new ArrayList<>(100), this::parseLine);
+    public NoteList loadNotes() throws IOException {
+        ArrayList<Note> notesList = super.load(new ArrayList<>(MAX_NOTES), this::parseLine);
         return new NoteList(notesList);
     }
 }

@@ -114,7 +114,13 @@ public class TaskList implements Catalogue {
         case DEADLINE -> {
             try {
                 String[] data = task.split("/by");
-                return new Deadline(data[0].trim(), parseDateTime(data[1].trim()));
+                LocalDateTime dateTime = Catalogue.super.parseDateTime(data[1].trim());
+
+                if (dateTime.isBefore(LocalDateTime.now())) {
+                    throw new InvalidCommandException("The deadline cannot be in the past.");
+                }
+
+                return new Deadline(data[0].trim(), dateTime);
             } catch (IndexOutOfBoundsException e) {
                 throw new InvalidCommandException("eg. task deadline return book /by 23-08-2025 1800");
             }
@@ -123,7 +129,19 @@ public class TaskList implements Catalogue {
             try {
                 String[] data = task.split("/from");
                 String[] timing = data[1].trim().split("/to");
-                return new Event(data[0].trim(), parseDateTime(timing[0].trim()), parseDateTime(timing[1].trim()));
+                LocalDateTime startDateTime = Catalogue.super.parseDateTime(timing[0].trim());
+                LocalDateTime endDateTime = Catalogue.super.parseDateTime(timing[1].trim());
+
+                if (startDateTime.isBefore(LocalDateTime.now())
+                        || endDateTime.isBefore(LocalDateTime.now())) {
+                    throw new InvalidCommandException("The event cannot be in the past.");
+                }
+
+                if (endDateTime.isBefore(startDateTime) || endDateTime.isEqual(startDateTime)) {
+                    throw new InvalidCommandException("The event cannot end before it starts.");
+                }
+
+                return new Event(data[0].trim(), startDateTime, endDateTime);
             } catch (IndexOutOfBoundsException e) {
                 throw new InvalidCommandException("eg. task event project meeting "
                         + "/from 23-08-2025 1400 /to 23-08-2025 1600");
@@ -146,7 +164,20 @@ public class TaskList implements Catalogue {
     @Override
     public Task addItem(String task, String type) throws InvalidCommandException {
         try {
-            Task t = createTask(task, type);
+            if (task == null || task.trim().isEmpty()) {
+                throw new InvalidCommandException("The description of a task cannot be empty.");
+            }
+
+            if (type == null || type.trim().isEmpty()) {
+                throw new InvalidCommandException("The type of a task cannot be empty.");
+            }
+
+            Task t = createTask(task.trim(), type.trim());
+
+            if (taskList.stream().anyMatch(existingTask -> existingTask.equals(t))) {
+                throw new InvalidCommandException("This task already exists.");
+            }
+
             taskList.add(t);
             return t;
         } catch (IllegalArgumentException e) {

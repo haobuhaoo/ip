@@ -3,8 +3,10 @@ package lax.application;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lax.Lax;
@@ -26,7 +28,7 @@ public class Main extends Application {
     /**
      * An instance of the chatbot.
      */
-    private final Lax lax = new Lax(taskPath, notesPath);
+    private Lax lax;
 
     /**
      * Starts the GUI of the application.
@@ -34,6 +36,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
+            lax = new Lax(taskPath, notesPath);
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
@@ -41,7 +44,21 @@ public class Main extends Application {
             fxmlLoader.<MainWindow>getController().setLax(lax);
             stage.show();
         } catch (IOException e) {
-            System.out.println("Error starting app: " + e.getMessage());
+            showAlert("Failed to load app: " + e.getMessage());
+            Platform.exit();
         }
+    }
+
+    /**
+     * Displays an alert with the title "Error" and message.
+     *
+     * @param message The message to be displayed in the alert.
+     */
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

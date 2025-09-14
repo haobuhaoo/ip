@@ -37,6 +37,6 @@ public class FindCommand extends Command {
      */
     @Override
     public String execute(Catalogue catalogue, Ui ui, Storage storage) {
-        return ui.showList(catalogue.findItems(description));
+        return ui.showList(catalogue.findItems(description.trim()));
     }
 }

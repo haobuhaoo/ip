@@ -1,5 +1,7 @@
 package lax.command;
 
+import java.io.IOException;
+
 import lax.catalogue.Catalogue;
 import lax.exception.InvalidCommandException;
 import lax.item.Item;
@@ -47,9 +49,10 @@ public class LabelCommand extends Command {
      * Only <code>Task</code> can be labelled.
      *
      * @throws InvalidCommandException If the user inputs an invalid command or if a note is being labelled.
+     * @throws IOException             If there is an error in writing to the database file.
      */
     @Override
-    public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException {
+    public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException, IOException {
         Item item = catalogue.labelItem(taskNumber, isMark);
         assert item != null : "item should not be null";
 

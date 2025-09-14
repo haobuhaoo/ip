@@ -2,6 +2,7 @@ package lax.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_success() throws InvalidCommandException {
+    public void execute_success() throws InvalidCommandException, IOException {
         catalogue.addItem("test task", "todo");
         catalogue.addItem("testing 1, 2, 3", "todo");
         Command find = new FindCommand("testing");
