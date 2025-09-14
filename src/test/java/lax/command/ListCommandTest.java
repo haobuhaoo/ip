@@ -2,6 +2,7 @@ package lax.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_success() throws InvalidCommandException {
+    public void execute_success() throws InvalidCommandException, IOException {
         Command list = new ListCommand();
 
         assertEquals("There is no item in your list.", list.execute(catalogue, ui, storage));

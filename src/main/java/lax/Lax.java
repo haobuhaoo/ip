@@ -1,5 +1,6 @@
 package lax;
 
+import java.io.IOException;
 import java.time.format.DateTimeParseException;
 
 import lax.catalogue.NoteList;
@@ -51,7 +52,7 @@ public class Lax {
      * Constructs the chatbot with strings <code>taskPath</code> and <code>notesPath</code> to store
      * the list of items.
      */
-    public Lax(String taskPath, String notesPath) {
+    public Lax(String taskPath, String notesPath) throws IOException {
         ui = new Ui();
         taskStorage = new TaskStorage(taskPath);
         notesStorage = new NotesStorage(notesPath);
@@ -72,6 +73,10 @@ public class Lax {
     public String getResponse(String input) {
         String invalidCmd = Command.CommandType.INVALID.name();
         try {
+            if (input == null || input.trim().isEmpty()) {
+                throw new InvalidCommandException("Empty command");
+            }
+
             Command command = Parser.parse(input);
             commandType = command.getCommandType().name();
             assert !commandType.isEmpty() : "command type should not be empty";
@@ -87,6 +92,9 @@ public class Lax {
         } catch (DateTimeParseException e) {
             commandType = invalidCmd;
             return ui.invalidDateTime();
+        } catch (IOException e) {
+            commandType = invalidCmd;
+            return ui.showError("Failed to save data: " + e.getMessage());
         }
     }
 }

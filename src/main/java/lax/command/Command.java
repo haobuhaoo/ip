@@ -1,5 +1,7 @@
 package lax.command;
 
+import java.io.IOException;
+
 import lax.catalogue.Catalogue;
 import lax.exception.InvalidCommandException;
 import lax.storage.Storage;
@@ -35,5 +37,5 @@ public abstract class Command {
     /**
      * Executes the given command.
      */
-    public abstract String execute(Catalogue t, Ui u, Storage s) throws InvalidCommandException;
+    public abstract String execute(Catalogue t, Ui u, Storage s) throws InvalidCommandException, IOException;
 }

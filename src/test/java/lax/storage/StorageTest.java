@@ -28,7 +28,7 @@ public class StorageTest {
     }
 
     @Test
-    public void load_fileDoesntExist_success() {
+    public void load_fileDoesntExist_success() throws IOException {
         assertEquals(0, new Storage(filePath).load(new ArrayList<>(), Note::new).size());
     }
 
@@ -72,7 +72,7 @@ public class StorageTest {
     }
 
     @Test
-    public void saveTask_success() {
+    public void saveTask_success() throws IOException {
         ArrayList<Note> arrayList = new ArrayList<>();
         arrayList.add(new Note("note 1"));
         arrayList.add(new Note("note 2"));

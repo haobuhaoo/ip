@@ -1,5 +1,6 @@
 package lax.storage;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -29,18 +30,38 @@ public class TaskStorage extends Storage {
         String[] data = line.split("\\|");
         assert data.length >= 3 : "tasks in the file should at least have the type, label and description";
 
+        if (data[0].trim().isEmpty() || data[1].trim().isEmpty() || data[2].trim().isEmpty()) {
+            super.handleCorruptedItem(line);
+            return null;
+        }
+
         boolean completed = data[1].trim().equals("1");
 
         switch (TaskList.TaskType.valueOf(data[0].trim().toUpperCase())) {
-        case TODO:
+        case TODO -> {
             return new Todo(data[2].trim(), completed);
-        case DEADLINE:
+        }
+        case DEADLINE -> {
+            if (data.length < 4 || data[3].trim().isEmpty()) {
+                super.handleCorruptedItem(line);
+                return null;
+            }
+
             return new Deadline(data[2].trim(), completed, LocalDateTime.parse(data[3].trim()));
-        case EVENT:
+        }
+        case EVENT -> {
+            if (data.length < 5 || data[3].trim().isEmpty() || data[4].trim().isEmpty()) {
+                super.handleCorruptedItem(line);
+                return null;
+            }
+
             return new Event(data[2].trim(), completed,
                     LocalDateTime.parse(data[3].trim()), LocalDateTime.parse(data[4].trim()));
-        default:
-            throw new RuntimeException("Invalid task format");
+        }
+        default -> {
+            super.handleCorruptedItem(line);
+            return null;
+        }
         }
     }
 
@@ -53,9 +74,7 @@ public class TaskStorage extends Storage {
     public Task parseLine(String line) {
         try {
             return createTask(line);
-        } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-            throw new RuntimeException(e);
-        } catch (DateTimeParseException e) {
+        } catch (IllegalArgumentException | IndexOutOfBoundsException | DateTimeParseException e) {
             super.handleCorruptedItem(line);
             return null;
         }
@@ -66,8 +85,9 @@ public class TaskStorage extends Storage {
      * <code>Task</code>, which then adds it into a taskList and is returned.
      *
      * @return The list of tasks stored previously or a new empty list.
+     * @throws IOException If there is an error reading the file.
      */
-    public TaskList loadTask() {
+    public TaskList loadTask() throws IOException {
         ArrayList<Task> taskList = super.load(new ArrayList<>(100), this::parseLine);
         return new TaskList(taskList);
     }

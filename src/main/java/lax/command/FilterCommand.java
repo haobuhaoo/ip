@@ -38,6 +38,6 @@ public class FilterCommand extends Command {
      */
     @Override
     public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException {
-        return ui.showList(catalogue.filterItems(dateTime));
+        return ui.showList(catalogue.filterItems(dateTime.trim()));
     }
 }

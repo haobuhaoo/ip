@@ -2,6 +2,9 @@ package lax.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +22,15 @@ public class FilterCommandTest {
     private Storage storage;
     private Catalogue catalogue;
 
+    private String parseDate(LocalDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm"));
+    }
+
+    private String printDate(LocalDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy hh:mma"))
+                .replace("AM", "am").replace("PM", "pm");
+    }
+
     @BeforeEach
     void setup() {
         ui = new Ui();
@@ -27,15 +39,23 @@ public class FilterCommandTest {
     }
 
     @Test
-    public void execute_success() throws InvalidCommandException {
-        catalogue.addItem("test task /by 09-09-2025 0000", "deadline");
-        catalogue.addItem("testing 1, 2, 3 /by 10-10-2025 1234", "deadline");
-        Command filter = new FilterCommand("08-09-2025 0000");
+    public void execute_success() throws InvalidCommandException, IOException {
+        LocalDateTime firstDate = LocalDateTime.now().plusDays(1);
+        LocalDateTime secondDate = LocalDateTime.now().plusDays(32);
+        String firstDateString = parseDate(firstDate);
+        String secondDateString = parseDate(secondDate);
+        String today = parseDate(LocalDateTime.now());
 
-        assertEquals("""
-                        Here are the items in your list on Sep 08 2025 12:00am:
-                        1. [D][ ] test task (by: Sep 09 2025 12:00am)
-                        2. [D][ ] testing 1, 2, 3 (by: Oct 10 2025 12:34pm)""",
+        catalogue.addItem("test task /by " + firstDateString, "deadline");
+        catalogue.addItem("testing 1, 2, 3 /by " + secondDateString, "deadline");
+        Command filter = new FilterCommand(today);
+
+        String formattedToday = printDate(LocalDateTime.now());
+        String formattedDate1 = printDate(firstDate);
+        String formattedDate2 = printDate(secondDate);
+        assertEquals("Here are the items in your list on " + formattedToday + ":\n"
+                        + "1. [D][ ] test task (by: " + formattedDate1 + ")\n"
+                        + "2. [D][ ] testing 1, 2, 3 (by: " + formattedDate2 + ")",
                 filter.execute(catalogue, ui, storage));
     }
 }

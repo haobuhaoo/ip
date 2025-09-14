@@ -1,5 +1,7 @@
 package lax.command;
 
+import java.io.IOException;
+
 import lax.catalogue.Catalogue;
 import lax.exception.InvalidCommandException;
 import lax.item.Item;
@@ -38,9 +40,10 @@ public class DeleteCommand extends Command {
      * into the database. After successful execution, a success message is displayed to the user.
      *
      * @throws InvalidCommandException If the user inputs an invalid command.
+     * @throws IOException             If there is an error in writing to the database file.
      */
     @Override
-    public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException {
+    public String execute(Catalogue catalogue, Ui ui, Storage storage) throws InvalidCommandException, IOException {
         Item item = catalogue.deleteItem(taskNumber);
         assert item != null : "item should not be null";
 

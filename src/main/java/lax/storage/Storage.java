@@ -38,26 +38,29 @@ public class Storage {
 
     /**
      * Creates the file to store the catalogue.
+     *
+     * @throws IOException If the file could not be created.
      */
-    private void createFile(File file) {
+    private void createFile(Path path) throws IOException {
         try {
-            if (!file.createNewFile()) {
-                System.out.println("File could not be created.");
-            }
+            Files.createFile(path);
         } catch (IOException e) {
-            System.out.println("Error creating new file: " + e.getMessage());
+            throw new IOException("File could not be created: " + e.getMessage());
         }
     }
 
     /**
      * Creates the parent directory for the file that stores the catalogue.
+     *
+     * @throws IOException If the parent directory could not be created.
      */
-    private void createFileDirectory(File file) {
-        File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) {
-            if (!parent.mkdirs()) {
-                System.out.println("Error creating parent directory.");
+    private void createFileDirectory(Path parentPath) throws IOException {
+        try {
+            if (parentPath != null && !Files.exists(parentPath)) {
+                Files.createDirectories(parentPath);
             }
+        } catch (IOException e) {
+            throw new IOException("Parent directory could not be created: " + e.getMessage());
         }
     }
 
@@ -85,16 +88,18 @@ public class Storage {
      * @param parseLine The function that converts the string line to an <code>Item</code> object.
      * @return The arraylist with the items or an empty arraylist.
      */
-    protected <T extends Item> ArrayList<T> load(ArrayList<T> arrayList, Function<String, T> parseLine) {
-        File file = new File(filePath);
+    protected <T extends Item> ArrayList<T> load(ArrayList<T> arrayList, Function<String, T> parseLine)
+            throws IOException {
+        corrupted[0] = 0;
+        Path path = Path.of(filePath);
 
-        if (!file.exists()) {
-            createFileDirectory(file);
-            createFile(file);
+        if (!Files.exists(path)) {
+            createFileDirectory(path.getParent());
+            createFile(path);
             return arrayList;
         }
 
-        try (Stream<String> lines = Files.lines(file.toPath())) {
+        try (Stream<String> lines = Files.lines(path)) {
             arrayList = lines.map(String::trim)
                     .filter(line -> !line.isEmpty())
                     .map(parseLine)
@@ -117,12 +122,8 @@ public class Storage {
      *
      * @param catalogue The <code>Catalogue</code> that is being read and write into the file.
      */
-    public void saveTask(Catalogue catalogue) {
-        try {
-            Path path = new File(filePath).toPath();
-            Files.write(path, catalogue.serialize());
-        } catch (IOException e) {
-            throw new RuntimeException("Error saving task: " + e);
-        }
+    public void saveTask(Catalogue catalogue) throws IOException {
+        Path path = new File(filePath).toPath();
+        Files.write(path, catalogue.serialize());
     }
 }

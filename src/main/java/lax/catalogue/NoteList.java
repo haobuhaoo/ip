@@ -54,7 +54,7 @@ public class NoteList implements Catalogue {
      * Parses the date of the pattern of "dd-MM-yyyy" into a <code>LocalDate</code> object.
      *
      * @return <li>The format is "yyyy-MM-ddT00:00".</li><li>Eg. "2025-08-26T00:00".</li>
-     * @throws DateTimeParseException If the date cannot be parsed.
+     * @throws InvalidCommandException If the date cannot be parsed.
      */
     public LocalDate parseDate(String dateTime) throws InvalidCommandException {
         try {
@@ -96,12 +96,21 @@ public class NoteList implements Catalogue {
      * @param note The description of the note.
      * @param type The type of note.
      * @return The new <code>Note</code> that is added.
-     * @throws InvalidCommandException If input is of a wrong format.
+     * @throws InvalidCommandException If input is of a wrong format, or description is empty, or note
+     *                                 already exists.
      */
     @Override
     public Note addItem(String note, String type) throws InvalidCommandException {
+        if (note == null || note.trim().isEmpty()) {
+            throw new InvalidCommandException("The description of a note cannot be empty.");
+        }
+
+        if (notesList.stream().anyMatch(n -> n.getDescription().trim().equalsIgnoreCase(note.trim()))) {
+            throw new InvalidCommandException("This note already exists.");
+        }
+
         if (type.trim().equalsIgnoreCase(NOTE_TYPE)) {
-            Note newNote = new Note(note);
+            Note newNote = new Note(note.trim());
             notesList.add(newNote);
             return newNote;
         } else {
