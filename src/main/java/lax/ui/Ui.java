@@ -10,8 +10,8 @@ public class Ui {
     public String showWelcome() {
         return """
                 Hello! I'm Lax.
-                What can I do for you?
-                Key "help" to find out the list of commands.""";
+                What can I do for you zzzzz...
+                Key "help" to find out the list of commands zzzzz...""";
     }
 
     /**
@@ -38,6 +38,7 @@ public class Ui {
                 - help
                 - bye
 
+                zzzzz...
                 >>> task command:
                 (add a prefix "task" in front)
                 - list
@@ -50,6 +51,7 @@ public class Ui {
                 - find "task description"
                 - filter "DateTime"
 
+                zzzzz...
                 >>> note command:
                 (add a prefix "note" in front)
                 - list
@@ -63,27 +65,27 @@ public class Ui {
      * Displays the exit message line.
      */
     public String showExit() {
-        return "Bye. Hope to see you again soon!";
+        return "Bye zzzzz...";
     }
 
     /**
      * Displays the error messages that occurred.
      */
     public String showError(String msg) {
-        return msg;
+        return "zzzzz...\n" + msg;
     }
 
     /**
      * Displays the error message specific to wrong DateTime format.
      */
     public String invalidDateTime() {
-        return "Wrong DateTime format.\neg. 23-08-2025 1800";
+        return "zzzzz...\nWrong DateTime format.\neg. 23-08-2025 1800";
     }
 
     /**
      * Displays the reminder message if user did not key in anything.
      */
     public String emptyCmd() {
-        return "Please key something in.";
+        return "zzzzz... key something zzzzz...";
     }
 }
