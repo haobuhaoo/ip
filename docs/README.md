@@ -70,7 +70,7 @@ Format: `bye`
 
 ---
 
-### <ins>Task Management</ins>
+### Task Management
 
 #### Adding to-dos: `task todo`
 
@@ -140,7 +140,7 @@ Example: `task filter 20-09-2023 2359`
 
 ---
 
-### <ins>Note Management</ins>
+### Note Management
 
 #### Adding notes: `note add`
 
