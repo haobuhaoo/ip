@@ -1,2 +1,3 @@
-todo | 0 | test task
-todo | 1 | testing 1, 2, 3
+event | 0 | team project meeting | 2025-09-25T20:00 | 2025-09-25T22:00
+todo | 1 | finish tutorial
+deadline | 0 | submit assignment 2 | 2025-09-29T23:59
