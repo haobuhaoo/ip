@@ -23,7 +23,7 @@ public class StorageTest {
     private String filePath;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         filePath = tempNotesDir.resolve("./data/notes.txt").toString();
     }
 

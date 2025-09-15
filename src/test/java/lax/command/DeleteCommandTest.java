@@ -21,7 +21,7 @@ public class DeleteCommandTest {
     private Catalogue catalogue;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         ui = new Ui();
         storage = new TaskStorage("./data/task.txt");
         catalogue = new TaskList(new ArrayList<>());

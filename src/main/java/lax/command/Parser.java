@@ -33,7 +33,7 @@ public class Parser {
             throw new InvalidCommandException("Empty command");
         }
 
-        String[] cmd = command.split(" ", 2);
+        String[] cmd = command.trim().split(" ", 2);
         assert cmd.length <= 2 : "input should be split into prefix and command details";
 
         String invalidCmd = "\"" + command + "\"";
@@ -72,13 +72,16 @@ public class Parser {
      * @throws InvalidCommandException If command type is not in <code>TaskCommandList</code> or is incomplete.
      */
     public static Command parseTaskCmd(String command) throws InvalidCommandException {
-        String[] cmd = command.split(" ", 2);
+        String[] cmd = command.trim().split(" ", 2);
         assert cmd.length <= 2 : "task command should be split into type and task details";
 
         String invalidCmd = "\"task " + command + "\"";
         try {
             switch (TaskCommandList.valueOf(cmd[0].trim().toUpperCase())) {
             case LIST -> {
+                if (cmd.length != 1) {
+                    throw new InvalidCommandException(invalidCmd);
+                }
                 return new ListCommand();
             }
             case MARK, UNMARK -> {
@@ -111,7 +114,7 @@ public class Parser {
      * @throws InvalidCommandException If command type is not in <code>NoteCommandList</code> or is incomplete.
      */
     private static Command parseNoteCmd(String command) throws InvalidCommandException {
-        String[] cmd = command.split(" ", 2);
+        String[] cmd = command.trim().split(" ", 2);
         assert cmd.length <= 2 : "note command should split into type and note details";
 
         String prefix = "note";
@@ -119,6 +122,9 @@ public class Parser {
         try {
             switch (NoteCommandList.valueOf(cmd[0].trim().toUpperCase())) {
             case LIST -> {
+                if (cmd.length != 1) {
+                    throw new InvalidCommandException(invalidCmd);
+                }
                 return new ListCommand();
             }
             case ADD -> {
