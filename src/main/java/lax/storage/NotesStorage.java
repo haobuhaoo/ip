@@ -31,7 +31,7 @@ public class NotesStorage extends Storage {
      * @return The <code>Note</code> object created.
      * @throws DateTimeParseException If the format for date is wrong.
      */
-    private Note createNote(String line) throws DateTimeParseException {
+    protected Note createNote(String line) throws DateTimeParseException {
         String[] data = line.trim().split("\\|");
         assert data.length == 2 : "notes in the file should have the date and description";
 
@@ -49,7 +49,7 @@ public class NotesStorage extends Storage {
      * @param line The line to parse.
      * @return The created <code>Note</code>.
      */
-    private Note parseLine(String line) {
+    protected Note parseLine(String line) {
         try {
             return createNote(line);
         } catch (IndexOutOfBoundsException | DateTimeParseException e) {

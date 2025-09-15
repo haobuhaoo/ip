@@ -26,7 +26,7 @@ public class TaskStorage extends Storage {
      * @return The <code>Task</code> object created.
      * @throws DateTimeParseException If the format for dateTime is wrong.
      */
-    private Task createTask(String line) throws DateTimeParseException {
+    protected Task createTask(String line) throws DateTimeParseException {
         String[] data = line.split("\\|");
         assert data.length >= 3 : "tasks in the file should at least have the type, label and description";
 
@@ -71,7 +71,7 @@ public class TaskStorage extends Storage {
      * @param line The line to parse.
      * @return The created <code>Task</code>.
      */
-    public Task parseLine(String line) {
+    protected Task parseLine(String line) {
         try {
             return createTask(line);
         } catch (IllegalArgumentException | IndexOutOfBoundsException | DateTimeParseException e) {

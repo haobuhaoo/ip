@@ -19,10 +19,26 @@ public class NoteListTest {
     private Note note2;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         arrayList = new ArrayList<>();
         note1 = new Note("note 1", LocalDate.parse("2025-09-08"));
         note2 = new Note("note 2", LocalDate.parse("2025-09-08"));
+    }
+
+    @Test
+    public void parseDate_success() throws InvalidCommandException {
+        NoteList n = new NoteList(arrayList);
+        assertEquals(LocalDate.parse("2025-09-08"), n.parseDate("08-09-2025"));
+    }
+
+    @Test
+    public void parseDate_exceptionThrown() {
+        try {
+            new NoteList(arrayList).parseDate("2025/09/08");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\nWrong Date format.\neg. 01-09-2025", e.getMessage());
+        }
     }
 
     @Test
@@ -48,6 +64,13 @@ public class NoteListTest {
     }
 
     @Test
+    public void getDateString_success() {
+        NoteList n = new NoteList(arrayList);
+        assertEquals(" on Sep 08 2025", n.getDateString(LocalDateTime.parse("2025-09-08T00:00")));
+        assertEquals("", n.getDateString(null));
+    }
+
+    @Test
     public void labelItem_exceptionThrown() {
         try {
             new NoteList(arrayList).labelItem("1", true);
@@ -69,17 +92,36 @@ public class NoteListTest {
 
     @Test
     public void addItem_invalidNoteType_exceptionThrown() {
+        NoteList n = new NoteList(arrayList);
+
+        // invalid note type
         try {
-            NoteList n = new NoteList(arrayList);
             n.addItem("test note", "notNote");
             fail();
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\n\"test note\"", e.getMessage());
         }
+
+        // empty note description
+        try {
+            n.addItem("", "note");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\nThe description of a note cannot be empty.", e.getMessage());
+        }
+
+        // note already exists
+        try {
+            arrayList.add(note1);
+            n.addItem("note 1", "note");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\nThis note already exists.", e.getMessage());
+        }
     }
 
     @Test
-    public void deleteItem_taskDeleted_success() throws InvalidCommandException {
+    public void deleteItem_notesDeleted_success() throws InvalidCommandException {
         arrayList.add(note1);
         NoteList n = new NoteList(arrayList);
         n.deleteItem("1");
@@ -120,7 +162,7 @@ public class NoteListTest {
     }
 
     @Test
-    public void findItems_taskFound_success() {
+    public void findItems_notesFound_success() {
         arrayList.add(note1);
         arrayList.add(note2);
 
@@ -137,7 +179,7 @@ public class NoteListTest {
     }
 
     @Test
-    public void filterItems_taskFiltered_success() throws InvalidCommandException {
+    public void filterItems_notesFiltered_success() throws InvalidCommandException {
         arrayList.add(note1);
         arrayList.add(note2);
 

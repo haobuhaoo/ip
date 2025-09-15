@@ -45,21 +45,100 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_edgeCommand_success() throws InvalidCommandException {
+        // leading and trailing spaces
+        assertInstanceOf(ListCommand.class, Parser.parse("   task    list   "));
+
+        // mixed uppercase and lowercase
+        assertInstanceOf(HelpCommand.class, Parser.parse("HeLp"));
+    }
+
+    @Test
     public void parse_invalidCommand_exceptionThrown() {
+        // empty command
+        try {
+            Parser.parse("");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\nEmpty command", e.getMessage());
+        }
+
+        // missing details after prefix command
+        try {
+            Parser.parse("task");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\n\"task\"", e.getMessage());
+        }
+
+        // extra details for general command
+        try {
+            Parser.parse("help me");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\n\"help me\"", e.getMessage());
+        }
+
         // command does not exist
         try {
-            assertEquals(new HelpCommand(), Parser.parse("test"));
+            Parser.parse("test");
             fail();
         } catch (InvalidCommandException e) {
             assertEquals("Invalid command.\n\"test\"", e.getMessage());
         }
+    }
 
-        // command missing some details
+    @Test
+    public void parseTaskCmd_exceptionThrown() {
+        // command does not exist
         try {
-            assertEquals(new HelpCommand(), Parser.parse("task delete"));
+            Parser.parse("task test");
             fail();
         } catch (InvalidCommandException e) {
-            assertEquals("Invalid command.\n\"task delete\"", e.getMessage());
+            assertEquals("Invalid command.\n\"task test\"", e.getMessage());
+        }
+
+        // missing details after command
+        try {
+            Parser.parse("task mark");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\n\"task mark\"", e.getMessage());
+        }
+
+        // extra details after list command
+        try {
+            Parser.parse("task list all");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\n\"task list all\"", e.getMessage());
+        }
+    }
+
+    @Test
+    public void parseNoteCmd_exceptionThrown() {
+        // command does not exist
+        try {
+            Parser.parse("note test");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\n\"note test\"", e.getMessage());
+        }
+
+        // missing details after command
+        try {
+            Parser.parse("note delete");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\n\"note delete\"", e.getMessage());
+        }
+
+        // extra details after list command
+        try {
+            Parser.parse("note list all");
+            fail();
+        } catch (InvalidCommandException e) {
+            assertEquals("Invalid command.\n\"note list all\"", e.getMessage());
         }
     }
 }

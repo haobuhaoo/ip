@@ -1,6 +1,7 @@
 package lax.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class AddCommandTest {
     private Catalogue catalogue;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         ui = new Ui();
         storage = new TaskStorage("./data/task.txt");
         catalogue = new TaskList(new ArrayList<>());
@@ -36,5 +37,12 @@ public class AddCommandTest {
                           [T][ ] test task
                         Now you have 1 items in the list.""",
                 add.execute(catalogue, ui, storage));
+    }
+
+    @Test
+    public void execute_exceptionThrown() {
+        Command add = new AddCommand("test task", "invalidType");
+
+        assertThrows(InvalidCommandException.class, () -> add.execute(catalogue, ui, storage));
     }
 }

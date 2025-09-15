@@ -32,7 +32,7 @@ public class FilterCommandTest {
     }
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         ui = new Ui();
         storage = new TaskStorage("./data/task.txt");
         catalogue = new TaskList(new ArrayList<>());
