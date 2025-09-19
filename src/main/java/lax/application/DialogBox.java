@@ -50,6 +50,8 @@ public class DialogBox extends HBox {
         }
         dialog.setText(text);
         displayPicture.setImage(img);
+        displayPicture.setFitHeight(100);
+        displayPicture.setFitWidth(100);
     }
 
     /**

@@ -20,7 +20,7 @@
                 <Font name="SansSerif Regular" size="14.0"/>
             </font>
         </Label>
-        <ImageView fx:id="displayPicture" fitHeight="99.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="displayPicture" pickOnBounds="true" preserveRatio="true">
             <HBox.margin>
                 <Insets right="10.0"/>
             </HBox.margin>
